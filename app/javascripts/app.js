@@ -220,143 +220,6 @@ function onlyUntilEnd() {
     })
 }
 
-/*function onlyHasEnded() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.hasEnded.call({ from: web3.eth.accounts[0] }).then(function (ended) {
-            $('#has-ended').html(ended.toString())
-        })
-    })
-}
-
-function onlyPreIco() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.stagePreIco.call({ from: web3.eth.accounts[0] }).then(function (preIco) {
-            $('#pre-ico').html(preIco.toString())
-        })
-    })
-}
-
-function onlyIco() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.stageIco.call({ from: web3.eth.accounts[0] }).then(function (ico) {
-            $('#ico').html(ico.toString())
-        })
-    })
-}
-
-function onlyTokenAddress() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.token.call({ from: web3.eth.accounts[0] }).then(function (token) {
-            $('#token').html(token)
-        })
-    })
-}
-
-function onlyTokenTotal() {
-    VacuumToken.deployed().then(function (contractInstance) {
-        contractInstance.totalSupply.call({ from: web3.eth.accounts[0] }).then(function (total) {
-                    $('#token-total').html(total.toString())
-                })
-            })
-}
-
-function onlySoldBtc() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.soldTokensForBtcInvestors.call({ from: web3.eth.accounts[0] }).then(function (soldBtc) {
-            $('#sold-btc').html(soldBtc.toString())
-        })
-    })
-}
-
-function onlyRemainTokens() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.remainTokens.call({ from: web3.eth.accounts[0] }).then(function (remain) {
-            $('#remain').html(remain.toString())
-        })
-    })
-}
-
-function onlySoldEth() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.soldTokensForEthInvestors.call({ from: web3.eth.accounts[0] }).then(function (soldEth) {
-            $('#sold-eth').html(soldEth.toString())
-        })
-    })
-}
-
-function onlyWeiRaised() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.weiRaised.call({ from: web3.eth.accounts[0] }).then(function (weiRaised) {
-            $('#wei-raised').html(weiRaised.toString())
-        })
-    })
-}
-
-function onlyRate() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.calcCurrentRate({ from: web3.eth.accounts[0] }).then(function (rate) {
-            $('#rate').html(rate.toString())
-            currentRate = rate
-        })
-    })
-}
-
-function onlyIcoBalance() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.icoBalance.call({ from: web3.eth.accounts[0] }).then(function (icoBalance) {
-            $('#ico-balance').html(icoBalance.toString())
-        })
-    })
-}
-
-function onlyWallet() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.getWallet.call({ from: web3.eth.accounts[0] }).then(function (wallet) {
-            $('#wallet-address').html(wallet)
-        })
-    })
-}
-
-function onlyRestrictedWallet() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.getRestrictedWallet.call({ from: web3.eth.accounts[0] }).then(function (restricted) {
-            $('#restricted-address').html(restricted)
-        })
-    })
-}
-
-function onlyPreIcoTotal() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.getPreIcoInvestorsCount.call({ from: web3.eth.accounts[0] }).then(function (preIcoTotal) {
-            $('#pre-ico-total').html(preIcoTotal.toString())
-        })
-    })
-}
-
-function onlyPreIcoMintCount() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.getPreIcoMintCount.call({ from: web3.eth.accounts[0] }).then(function (preIcoCount) {
-            $('#pre-ico-count').html(preIcoCount.toString())
-        })
-    })
-}
-
-function onlyIcoTotal() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.getIcoInvestorsCount.call({ from: web3.eth.accounts[0] }).then(function (icoTotal) {
-            $('#ico-total').html(icoTotal.toString())
-        })
-    })
-}
-
-function onlyIcoMintCount() {
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.getIcoMintCount.call({ from: web3.eth.accounts[0] }).then(function (icoCount) {
-            $('#ico-count').html(icoCount.toString())
-        })
-    })
-}*/
-
 async function populateContractInfo () {
 
     onlyOwner()
@@ -365,15 +228,9 @@ async function populateContractInfo () {
 
     onlyTokenAddress()
 
-    //onlyPreIco()
-
-    //onlyIco()
-
     onlyStart()
 
     onlyPeriod()
-
-    //onlyHasEnded()
 
     onlyPaused()
     
@@ -395,48 +252,7 @@ async function populateContractInfo () {
 
     onlyBalanceForCurrentCustomer()
 
-    //onlySoldEth()
-
-    //onlySoldBtc()
-
-    //onlyRemainTokens()
-
-    //onlyWeiRaised()
-
-    //onlyTokenAddress()
-
-    //onlyTokenTotal()
-
-    //onlyWallet()
-
-    //onlyRestrictedWallet()
-
-    //onlyIcoBalance()
-
-    //onlyPreIcoTotal()
-
-    /*onlyPreIcoMintCount()
-
-    onlyIcoTotal()
-
-    onlyIcoMintCount()
-
-    transactionTracker()
-
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.hardCap.call({ from: web3.eth.accounts[0] }).then(function (hardCap) {
-            $('#hardcap').html(hardCap.toString())
-        })
-    })
-
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.restrictedTokens.call({ from: web3.eth.accounts[0] }).then(function (restricted) {
-            $('#restricted').html(restricted.toString())
-        })
-    })*/
-
 }
-
 
 window.setupRound = function () {
   let start = $('#start-value').val()
@@ -464,8 +280,6 @@ window.setupRound = function () {
         onlyHardcap()
         onlyRemainTokens()
         onlyLastRateChange()
-        //onlyHasEnded()
-        //transactionTracker()
         $('#msg-ico').html('')
       }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
     })
@@ -559,113 +373,6 @@ window.unpause = function () {
     })
 }
 
-/*window.setupWallet = function () {
-    let withdrawal = $('#wallet-setup').val()
-    $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
-    $('#wallet-setup').val('')
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.setupWallet(withdrawal, { gas: 200000, from: web3.eth.accounts[0] }).then(function () {
-            onlyWallet()
-            transactionTracker()
-            $('#msg-ico').html('')
-        }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-    })
-}
-
-window.setupRestrictedWallet = function () {
-    let restricted = $('#restricted-wallet-setup').val()
-    $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
-    $('#restricted-wallet-setup').val('')
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.setupRestrictedWallet(restricted, { gas: 200000, from: web3.eth.accounts[0] }).then(function () {
-            onlyRestrictedWallet()
-            transactionTracker()
-            $('#msg-ico').html('')
-        }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-    })
-}
-
-window.changeStage = function () {
-    $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.changeFundrisingStage( { gas: 200000, from: web3.eth.accounts[0] }).then(function () {
-            onlyPreIco()
-            onlyIco()
-            transactionTracker()
-            $('#msg-ico').html('')
-        }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-    })
-}
-
-window.finishStage = function () {
-    $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.finishFundrisingStage( { gas: 200000, from: web3.eth.accounts[0] }).then(function () {
-            onlyPreIco()
-            onlyIco()
-            transactionTracker()
-            $('#msg-ico').html('')
-        }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-    })
-}
-
-window.reserveToBtc = function () {
-    let addrBtc = $('#btc-address').val()
-    let tokensBtc = $('#btc-tokens').val()
-    if (!addrBtc || !tokensBtc) {
-        $('#msg-token').html('Empty values are not allowed!')
-    } else {
-        $('#msg-token').html('Info has been submitted and is recording to the blockchain. Please wait.')
-        $('#btc-address').val('')
-        $('#btc-tokens').val('')
-        VacuumTokenSale.deployed().then(function (contractInstance) {
-            contractInstance.purchaseToBtcInvestors(addrBtc, tokensBtc, { gas: 200000, from: web3.eth.accounts[0] }).then(function () {
-                onlySoldBtc()
-                onlyRemainTokens()
-                onlyPreIcoTotal()
-                onlyIcoTotal()
-                transactionTracker()
-                $('#msg-token').html('')
-            }).catch(function (e) { if (e) { $('#msg-token').html('Something goes wrong.') } })
-        })
-    }
-}
-
-window.mintPreIcoTokens = function () {
-    $('#msg-token').html('Info has been submitted and is recording to the blockchain. Please wait.')
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.mintTokenPreICO( { from: web3.eth.accounts[0] }).then(function () {
-            transactionTracker()
-            onlyTokenTotal()
-            onlyPreIcoMintCount()
-            $('#msg-token').html('')
-        }).catch(function (e) { if (e) { $('#msg-token').html('Something goes wrong.') } })
-    })
-}
-
-window.mintIcoTokens = function () {
-    $('#msg-token').html('Info has been submitted and is recording to the blockchain. Please wait.')
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.mintTokenICO( { from: web3.eth.accounts[0] }).then(function () {
-            transactionTracker()
-            onlyTokenTotal()
-            onlyIcoMintCount()
-            $('#msg-token').html('')
-        }).catch(function (e) { if (e) { $('#msg-token').html('Something goes wrong.') } })
-    })
-}
-
-window.finishMint = function () {
-    $('#msg-token').html('Info has been submitted and is recording to the blockchain. Please wait.')
-    VacuumTokenSale.deployed().then(function (contractInstance) {
-        contractInstance.finishMinting( { from: web3.eth.accounts[0] }).then(function () {
-            transactionTracker()
-            onlyTokenTotal()
-            $('#msg-token').html('')
-        }).catch(function (e) { if (e) { $('#msg-token').html('Something goes wrong.') } })
-    })
-}*/
-
 window.transferOwner = function () {
     let newOwner = $('#owner-value').val()
     if (!newOwner) {
@@ -720,8 +427,6 @@ async function payed (_amount) {
     })
   })
 }
-
-
 
 function afterPayed () {
     $('#msg-buy').html('')
