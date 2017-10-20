@@ -284,7 +284,7 @@ contract MintableToken is StandardToken, Ownable {
 
 contract BurnableToken is StandardToken, AddressesBurn {
     
-    address[] allowedAddressesForBurn;
+    mapping(address => bool) allowedAddressesForBurn;
     
     uint256 public burned;
 
@@ -292,64 +292,62 @@ contract BurnableToken is StandardToken, AddressesBurn {
     event BurnAll(address indexed burner, uint256 value);
 
     function BurnableToken() {
-        allowedAddressesForBurn.push(burn1);
-        allowedAddressesForBurn.push(burn2);
-        allowedAddressesForBurn.push(burn3);
-        allowedAddressesForBurn.push(burn4);
-        allowedAddressesForBurn.push(burn5);
-        allowedAddressesForBurn.push(burn6);
-        allowedAddressesForBurn.push(burn7);
-        allowedAddressesForBurn.push(burn8);
-        allowedAddressesForBurn.push(burn9);
-        allowedAddressesForBurn.push(burn10);
-        allowedAddressesForBurn.push(burn11);
-        allowedAddressesForBurn.push(burn12);
-        allowedAddressesForBurn.push(burn13);
-        allowedAddressesForBurn.push(burn14);
-        allowedAddressesForBurn.push(burn15);
-        allowedAddressesForBurn.push(burn16);
-        allowedAddressesForBurn.push(burn17);
-        allowedAddressesForBurn.push(burn18);
-        allowedAddressesForBurn.push(burn19);
-        allowedAddressesForBurn.push(burn20);
-        allowedAddressesForBurn.push(burn21);
-        allowedAddressesForBurn.push(burn22);
-        allowedAddressesForBurn.push(burn23);
-        allowedAddressesForBurn.push(burn24);
-        allowedAddressesForBurn.push(burn25);
-        allowedAddressesForBurn.push(burn26);
-        allowedAddressesForBurn.push(burn27);
-        allowedAddressesForBurn.push(burn28);
-        allowedAddressesForBurn.push(burn29);
-        allowedAddressesForBurn.push(burn30);
-        allowedAddressesForBurn.push(burn31);
-        allowedAddressesForBurn.push(burn32);
-        allowedAddressesForBurn.push(burn33);
-        allowedAddressesForBurn.push(burn34);
-        allowedAddressesForBurn.push(burn35);
-        allowedAddressesForBurn.push(burn36);
-        allowedAddressesForBurn.push(burn37);
-        allowedAddressesForBurn.push(burn38);
-        allowedAddressesForBurn.push(burn39);
-        allowedAddressesForBurn.push(burn40);
-        allowedAddressesForBurn.push(burn41);
-        allowedAddressesForBurn.push(burn42);
-        allowedAddressesForBurn.push(burn43);
-        allowedAddressesForBurn.push(burn44);
-        allowedAddressesForBurn.push(burn45);
-        allowedAddressesForBurn.push(burn46);
-        allowedAddressesForBurn.push(burn47);
-        allowedAddressesForBurn.push(burn48);
-        allowedAddressesForBurn.push(burn49);
-        allowedAddressesForBurn.push(burn50);
+        allowedAddressesForBurn[burn1] = true;
+        allowedAddressesForBurn[burn2] = true;
+        allowedAddressesForBurn[burn3] = true;
+        allowedAddressesForBurn[burn4] = true;
+        allowedAddressesForBurn[burn5] = true;
+        allowedAddressesForBurn[burn6] = true;
+        allowedAddressesForBurn[burn7] = true;
+        allowedAddressesForBurn[burn8] = true;
+        allowedAddressesForBurn[burn9] = true;
+        allowedAddressesForBurn[burn10] = true;
+        allowedAddressesForBurn[burn11] = true;
+        allowedAddressesForBurn[burn12] = true;
+        allowedAddressesForBurn[burn13] = true;
+        allowedAddressesForBurn[burn14] = true;
+        allowedAddressesForBurn[burn15] = true;
+        allowedAddressesForBurn[burn16] = true;
+        allowedAddressesForBurn[burn17] = true;
+        allowedAddressesForBurn[burn18] = true;
+        allowedAddressesForBurn[burn19] = true;
+        allowedAddressesForBurn[burn20] = true;
+        allowedAddressesForBurn[burn21] = true;
+        allowedAddressesForBurn[burn22] = true;
+        allowedAddressesForBurn[burn23] = true;
+        allowedAddressesForBurn[burn24] = true;
+        allowedAddressesForBurn[burn25] = true;
+        allowedAddressesForBurn[burn26] = true;
+        allowedAddressesForBurn[burn27] = true;
+        allowedAddressesForBurn[burn28] = true;
+        allowedAddressesForBurn[burn29] = true;
+        allowedAddressesForBurn[burn30] = true;
+        allowedAddressesForBurn[burn31] = true;
+        allowedAddressesForBurn[burn32] = true;
+        allowedAddressesForBurn[burn33] = true;
+        allowedAddressesForBurn[burn34] = true;
+        allowedAddressesForBurn[burn35] = true;
+        allowedAddressesForBurn[burn36] = true;
+        allowedAddressesForBurn[burn37] = true;
+        allowedAddressesForBurn[burn38] = true;
+        allowedAddressesForBurn[burn39] = true;
+        allowedAddressesForBurn[burn40] = true;
+        allowedAddressesForBurn[burn41] = true;
+        allowedAddressesForBurn[burn42] = true;
+        allowedAddressesForBurn[burn43] = true;
+        allowedAddressesForBurn[burn44] = true;
+        allowedAddressesForBurn[burn45] = true;
+        allowedAddressesForBurn[burn46] = true;
+        allowedAddressesForBurn[burn47] = true;
+        allowedAddressesForBurn[burn48] = true;
+        allowedAddressesForBurn[burn49] = true;
+        allowedAddressesForBurn[burn50] = true;
         burned = 0;
     }
 
-    function isAllowed(address test) public constant returns (bool) {
-        for(uint256 i=0; i<allowedAddressesForBurn.length; i++) {
-            if(test == allowedAddressesForBurn[i]) {
-                return true;
-            }
+    function isAllowed(address _address) public constant returns (bool) {
+        if(allowedAddressesForBurn[_address]) {
+            return true;
         }
         return false;
     }
@@ -399,9 +397,9 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
     using SafeMath for uint256;
 
-    address[] public wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
+    address[5] wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
 
-    EMERAToken public token;
+    EMERAToken public token = new EMERAToken();
 
     uint256 public start;
 
@@ -428,7 +426,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
         uint256 purshaseAmount;
     }
 
-    mapping (uint256 => statElem) statistics;
+    mapping(uint256 => statElem) statistics;
 
     uint256 public currentStatCount;
 
@@ -445,15 +443,14 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
     }
 
     function EMERATokenSale() {
-        token = createTokenContract();
         hardCapRound = 0;
         remainTokens = 0;
         weiRaised = 0;
-        wallets.push(withdraw1);
-        wallets.push(withdraw2);
-        wallets.push(withdraw3);
-        wallets.push(withdraw4);
-        wallets.push(withdraw5);
+        wallets[0] = withdraw1;
+        wallets[1] = withdraw2;
+        wallets[2] = withdraw3;
+        wallets[3] = withdraw4;
+        wallets[4] = withdraw5;
         currentStatCount = 0;
         maxStatCount = 0;
         start = 0;
@@ -462,14 +459,6 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 		bonusPercentage = 0;
 		lastTimeRateChange = 0;
 		currentRate = 0;
-    }
-
-    function createTokenContract() internal returns (EMERAToken) {
-        return new EMERAToken();
-    }
-
-    function now4() public returns (uint256) {
-        return now;
     }
 
 	// Change for Prod
@@ -557,8 +546,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
     }
 
     function forwardFunds(uint256 _purchase) private {
-        uint256[] memory walletWeis;
-        walletWeis = new uint256[](5);
+        uint256[5] memory walletWeis;
 
         walletWeis[0] = _purchase.mul(50).div(100);
         walletWeis[1] = _purchase.mul(20).div(100);

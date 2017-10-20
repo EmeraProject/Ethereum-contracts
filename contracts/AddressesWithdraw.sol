@@ -3,11 +3,11 @@ pragma solidity ^0.4.15;
 contract AddressesWithdraw {
 
     //Declare Withdrawal addresses
-    address public withdraw1;
-    address public withdraw2;
-    address public withdraw3;
-    address public withdraw4;
-    address public withdraw5;
+    address withdraw1;
+    address withdraw2;
+    address withdraw3;
+    address withdraw4;
+    address withdraw5;
 
   function AddressesWithdraw() {
 
