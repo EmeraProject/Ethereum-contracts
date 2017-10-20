@@ -1,5 +1,8 @@
 pragma solidity ^0.4.15;
 
+import "./AddressesBurn.sol";
+import "./AddressesWithdraw.sol";
+
 /**
  * @title ERC20Basic interface
  * @dev Basic version of ERC20 interface
@@ -279,7 +282,7 @@ contract MintableToken is StandardToken, Ownable {
 
 }
 
-contract BurnableToken is StandardToken {
+contract BurnableToken is StandardToken, AddressesBurn {
     
     address[] allowedAddressesForBurn;
     
@@ -288,10 +291,57 @@ contract BurnableToken is StandardToken {
     event Burn(address indexed burner, uint256 value);
     event BurnAll(address indexed burner, uint256 value);
 
-	//change for Prod
     function BurnableToken() {
-        allowedAddressesForBurn.push(0xF7d4C822FBC5a9245002a05B16EDaD98DCBCd733);
-        allowedAddressesForBurn.push(0x4591284f06BA7BFCC2Ad2a29e11083f589899Fab);
+        allowedAddressesForBurn.push(burn1);
+        allowedAddressesForBurn.push(burn2);
+        allowedAddressesForBurn.push(burn3);
+        allowedAddressesForBurn.push(burn4);
+        allowedAddressesForBurn.push(burn5);
+        allowedAddressesForBurn.push(burn6);
+        allowedAddressesForBurn.push(burn7);
+        allowedAddressesForBurn.push(burn8);
+        allowedAddressesForBurn.push(burn9);
+        allowedAddressesForBurn.push(burn10);
+        allowedAddressesForBurn.push(burn11);
+        allowedAddressesForBurn.push(burn12);
+        allowedAddressesForBurn.push(burn13);
+        allowedAddressesForBurn.push(burn14);
+        allowedAddressesForBurn.push(burn15);
+        allowedAddressesForBurn.push(burn16);
+        allowedAddressesForBurn.push(burn17);
+        allowedAddressesForBurn.push(burn18);
+        allowedAddressesForBurn.push(burn19);
+        allowedAddressesForBurn.push(burn20);
+        allowedAddressesForBurn.push(burn21);
+        allowedAddressesForBurn.push(burn22);
+        allowedAddressesForBurn.push(burn23);
+        allowedAddressesForBurn.push(burn24);
+        allowedAddressesForBurn.push(burn25);
+        allowedAddressesForBurn.push(burn26);
+        allowedAddressesForBurn.push(burn27);
+        allowedAddressesForBurn.push(burn28);
+        allowedAddressesForBurn.push(burn29);
+        allowedAddressesForBurn.push(burn30);
+        allowedAddressesForBurn.push(burn31);
+        allowedAddressesForBurn.push(burn32);
+        allowedAddressesForBurn.push(burn33);
+        allowedAddressesForBurn.push(burn34);
+        allowedAddressesForBurn.push(burn35);
+        allowedAddressesForBurn.push(burn36);
+        allowedAddressesForBurn.push(burn37);
+        allowedAddressesForBurn.push(burn38);
+        allowedAddressesForBurn.push(burn39);
+        allowedAddressesForBurn.push(burn40);
+        allowedAddressesForBurn.push(burn41);
+        allowedAddressesForBurn.push(burn42);
+        allowedAddressesForBurn.push(burn43);
+        allowedAddressesForBurn.push(burn44);
+        allowedAddressesForBurn.push(burn45);
+        allowedAddressesForBurn.push(burn46);
+        allowedAddressesForBurn.push(burn47);
+        allowedAddressesForBurn.push(burn48);
+        allowedAddressesForBurn.push(burn49);
+        allowedAddressesForBurn.push(burn50);
         burned = 0;
     }
 
@@ -320,7 +370,7 @@ contract BurnableToken is StandardToken {
         totalSupply = totalSupply.sub(_value);
         burned = burned.add(_value);
         Burn(burner, _value);
-        Transfer(burner, 0x0, _value);
+		Transfer(burner, 0x0, _value);
     }
 
     function burnAll() public {
@@ -331,7 +381,7 @@ contract BurnableToken is StandardToken {
         totalSupply = totalSupply.sub(value);
         burned = burned.add(value);
         BurnAll(burner, value);
-        Transfer(burner, 0x0, value);
+		Transfer(burner, 0x0, value);
     }
 }
 
@@ -345,11 +395,10 @@ contract EMERAToken is MintableToken, BurnableToken {
 
 }
 
-contract EMERATokenSale is Ownable, Pausable {
+contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
     using SafeMath for uint256;
 
-	//Change for Prod to private and create getter for owner
     address[] public wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
 
     EMERAToken public token;
@@ -395,17 +444,16 @@ contract EMERATokenSale is Ownable, Pausable {
         _;
     }
 
-	//change wallets for Prod
     function EMERATokenSale() {
         token = createTokenContract();
         hardCapRound = 0;
         remainTokens = 0;
         weiRaised = 0;
-        wallets.push(0x80c42915943F3675bE6303938FD14186FF980582);
-        wallets.push(0x10b83079A2b5cb6CDB099b3F9a7dfbC53D72a1Ce);
-        wallets.push(0x34477165160A0AFf1317327De3c48Dae62613419);
-        wallets.push(0xb66AB6020f3c1203393faD258d7A532406151359);
-        wallets.push(0x4DDd15eD2f8E64C516E4c181B0d10B66068e1FAd);
+        wallets.push(withdraw1);
+        wallets.push(withdraw2);
+        wallets.push(withdraw3);
+        wallets.push(withdraw4);
+        wallets.push(withdraw5);
         currentStatCount = 0;
         maxStatCount = 0;
         start = 0;
@@ -445,7 +493,6 @@ contract EMERATokenSale is Ownable, Pausable {
 
     function calcCurrentRate() internal constant returns (uint256) {
         uint256 fractionalRate;
-        //currentRate_ = rate.mul(100 - bonusPercentage).div(100);
         fractionalRate = rate.div(100000000);
         return fractionalRate;
     }
