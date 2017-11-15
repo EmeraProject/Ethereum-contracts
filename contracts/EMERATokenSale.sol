@@ -66,11 +66,75 @@ library SafeMath {
 }
 
 /**
+ * @title Ownable
+ * @dev The Ownable contract has an owner address, and provides basic authorization control
+ * functions.
+ */
+contract Ownable {
+
+  address public owner;
+
+  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+  /**
+   * @dev The Ownable constructor sets the original `owner` of the contract to the sender
+   * account.
+   */
+  function Ownable() {
+    owner = msg.sender;
+  }
+
+  /**
+   * @dev Throws if called by any account other than the owner.
+   */
+  modifier onlyOwner() {
+    require(msg.sender == owner);
+    _;
+  }
+
+  /**
+   * @dev Allows the current owner to transfer control of the contract to a newOwner.
+   * @param newOwner The address to transfer ownership to.
+   */
+  function transferOwnership(address newOwner) onlyOwner public {
+    require(newOwner != address(0));
+    OwnershipTransferred(owner, newOwner);
+    owner = newOwner;
+  }
+
+}
+
+contract Restrictable is Ownable {
+    
+    address public restrictedAddress;
+    
+    event RestrictedAddressChanged(address indexed restrictedAddress);
+    
+    function Restrictable() {
+        restrictedAddress = address(0);
+    }
+    
+    //that function could be called only ONCE!!! After that nothing could be reverted!!! 
+    function setRestrictedAddress(address _restrictedAddress) onlyOwner public {
+      restrictedAddress = _restrictedAddress;
+      RestrictedAddressChanged(_restrictedAddress);
+      transferOwnership(_restrictedAddress);
+    }
+    
+    modifier notRestricted(address tryTo) {
+        if(tryTo == restrictedAddress) {
+            revert();
+        }
+        _;
+    }
+}
+
+/**
  * @title ERC20Basic Token
  * @dev Implementation of the basic token.
  */
 
-contract BasicToken is ERC20Basic {
+contract BasicToken is ERC20Basic, Restrictable {
 
   using SafeMath for uint256;
 
@@ -81,7 +145,7 @@ contract BasicToken is ERC20Basic {
   * @param _to The address to transfer to.
   * @param _value The amount to be transferred.
   */
-  function transfer(address _to, uint256 _value) public returns (bool) {
+  function transfer(address _to, uint256 _value) notRestricted(_to) public returns (bool) {
     require(_to != address(0));
     require(_value <= balances[msg.sender]);
     balances[msg.sender] = balances[msg.sender].sub(_value);
@@ -116,7 +180,7 @@ contract StandardToken is ERC20, BasicToken {
    * @param _to address The address which you want to transfer to
    * @param _value uint256 the amout of tokens to be transfered
    */
-  function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+  function transferFrom(address _from, address _to, uint256 _value) notRestricted(_to) public returns (bool) {
     require(_to != address(0));
     require(_value <= balances[_from]);
     require(_value <= allowed[_from][msg.sender]);
@@ -179,44 +243,6 @@ contract StandardToken is ERC20, BasicToken {
 
 }
 
-/**
- * @title Ownable
- * @dev The Ownable contract has an owner address, and provides basic authorization control
- * functions.
- */
-contract Ownable {
-
-  address public owner;
-
-  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
-  /**
-   * @dev The Ownable constructor sets the original `owner` of the contract to the sender
-   * account.
-   */
-  function Ownable() {
-    owner = msg.sender;
-  }
-
-  /**
-   * @dev Throws if called by any account other than the owner.
-   */
-  modifier onlyOwner() {
-    require(msg.sender == owner);
-    _;
-  }
-
-  /**
-   * @dev Allows the current owner to transfer control of the contract to a newOwner.
-   * @param newOwner The address to transfer ownership to.
-   */
-  function transferOwnership(address newOwner) onlyOwner public {
-    require(newOwner != address(0));
-    OwnershipTransferred(owner, newOwner);
-    owner = newOwner;
-  }
-
-}
 
 /**
  * @title Pausable
@@ -262,7 +288,7 @@ contract Pausable is Ownable {
  * @dev ERC20 Token, with mintable token creation
  * Based on code by TokenMarketNet: https://github.com/TokenMarketNet/ico/blob/master/contracts/MintableToken.sol
  */
-contract MintableToken is StandardToken, Ownable {
+contract MintableToken is StandardToken {
 
   event Mint(address indexed to, uint256 amount);
 
@@ -399,7 +425,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
     address[5] wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
 
-    EMERAToken public token = new EMERAToken();
+    EMERAToken public token = EMERAToken(0xd537dc6f54b81cb945e178322cdf1e33dd7f13e9);
 
     uint256 public start;
 
@@ -437,7 +463,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
 	//Change for Prod
     modifier salesActive() {
-        bool withinPeriod = now >= start && now <= start + period * 1 minutes;
+        bool withinPeriod = now >= start && now <= start + period * 10 * 1 minutes;
         require(withinPeriod && !paused);
         _;
     }
@@ -463,7 +489,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
 	// Change for Prod
     function setupNewRoundParams(uint256 _start, uint256 _period, uint256 _rate, uint256 _bonusPercentage, uint256 _hardCap) onlyOwner public returns (bool) {
-        require(remainTokens == 0 || start + period * 1 minutes < now);
+        require(remainTokens == 0 || start + period * 1 minutes < now || start > now);
         require(_start >= now && _period > 0);
         require(_rate >= 100000000);
         require(_bonusPercentage <= 100 && _bonusPercentage >= 0);
@@ -534,7 +560,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
             maxStatCount = maxStatCount.add(1);
         }
         currentStatCount = currentStatCount.add(1);
-        statElem newStatElem = statistics[currentStatCount];
+        statElem storage newStatElem = statistics[currentStatCount];
         newStatElem.beneficiary = beneficiary;
         newStatElem.tokenSale = tokensForSale;
         newStatElem.tokenBonus = bonusTokens;
