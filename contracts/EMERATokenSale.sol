@@ -425,7 +425,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
     address[5] wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
 
-    EMERAToken public token = EMERAToken(0xd537dc6f54b81cb945e178322cdf1e33dd7f13e9);
+    EMERAToken public token = EMERAToken(0xe0e593db82dd020e9625e24bfe4ed8d2d631c168);
 
     uint256 public start;
 
@@ -444,6 +444,12 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
     uint256 public weiRaised;
 
     uint256 private currentRate;
+    
+    uint256 public investmentYearStart;
+    
+    uint256 public investmentYearTokenFunds;
+    
+    bool public isRoundSaleStarted;
 
     struct statElem {
         address beneficiary;
@@ -485,11 +491,25 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 		bonusPercentage = 0;
 		lastTimeRateChange = 0;
 		currentRate = 0;
+		investmentYearStart = 0;
+    }
+    
+    function cancelRoundBeforeStart() public onlyOwner {
+        require(start > now);
+        currentStatCount = 0;
+        maxStatCount = 0;
+        start = 0;
+        period = 0;
+		rate = 0;
+		bonusPercentage = 0;
+		lastTimeRateChange = 0;
+		currentRate = 0;
+		hardCapRound = 0;
     }
 
 	// Change for Prod
     function setupNewRoundParams(uint256 _start, uint256 _period, uint256 _rate, uint256 _bonusPercentage, uint256 _hardCap) onlyOwner public returns (bool) {
-        require(remainTokens == 0 || start + period * 1 minutes < now || start > now);
+        require((remainTokens == 0 && isRoundSaleStarted == true) || start + period * 1 minutes < now || start > now);
         require(_start >= now && _period > 0);
         require(_rate >= 100000000);
         require(_bonusPercentage <= 100 && _bonusPercentage >= 0);
@@ -500,10 +520,11 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
         rate = _rate;
         bonusPercentage = _bonusPercentage;
         lastTimeRateChange = now;
-        hardCapRound = _hardCap.mul(100000000).add(remainTokens);
-        remainTokens = hardCapRound;
+        hardCapRound = _hardCap.mul(100000000);
+        //remainTokens = hardCapRound;
         currentRate = calcCurrentRate();
         currentStatCount = 0;
+        isRoundSaleStarted = false;
     }
 
     function calcCurrentRate() internal constant returns (uint256) {
@@ -528,7 +549,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
     function buyTokens(address beneficiary) payable salesActive {
         require(beneficiary != 0x0);
-		require(remainTokens > 0 && msg.value >= 10000000000000000);
+		require((remainTokens > 0 || !isRoundSaleStarted) && msg.value >= 10000000000000000);
 
         uint256 refund;
         uint256 purchase;
@@ -537,6 +558,18 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
         uint256 tokensForSale = weiAmount.div(currentRate);
         uint256 bonusTokens = tokensForSale.mul(bonusPercentage).div(100);
         uint256 tokens = tokensForSale.add(bonusTokens);
+        
+        if(!isRoundSaleStarted) { 
+            if(investmentYearStart == 0) {
+                investmentYearStart = now;
+                investmentYearTokenFunds = hardCapRound;
+            } else {
+                investmentYearTokenFunds = investmentYearTokenFunds.add(hardCapRound);
+            }
+            hardCapRound = hardCapRound.add(remainTokens);
+            remainTokens = hardCapRound;
+            isRoundSaleStarted = true;
+        }
 
         if (remainTokens < tokens) {
             uint256 tempPercentage = bonusPercentage.add(100);
@@ -599,5 +632,12 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
     function getStat(uint256 index) public constant returns (address, uint256, uint256, uint256) {
         return (statistics[index].beneficiary, statistics[index].tokenSale, statistics[index].tokenBonus, statistics[index].purshaseAmount);
     }
+    
+    function additionalTokenYearlyCreation() public onlyOwner {
+        require(investmentYearStart != 0 && now.sub(investmentYearStart) >= 5 * 60);
+        investmentYearStart = 0;
+        remainTokens = remainTokens.add(investmentYearTokenFunds.mul(5).div(1000));
+    }
 
 }
+
