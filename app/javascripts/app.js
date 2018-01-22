@@ -327,6 +327,17 @@ console.log("fsdfsd", contractInstance)
   })
 }
 
+window.eraseRemainedTokens = function () {
+  $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
+  EMERATokenSale.deployed().then(function (contractInstance) {
+console.log("fsdfsd0000088888", contractInstance)
+    contractInstance.resetremainingtokens({ gas: 200000, from: web3.eth.accounts[0] }).then(function () {
+        onlyRemainTokens()
+      $('#msg-ico').html('')
+    }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
+  })
+}
+
 async function transactionTracker() {
     $('#log-rows').html('')
     let logs = await getTransactionsByAccount().then(function(data) {

@@ -407,6 +407,10 @@ contract BurnableToken is StandardToken, AddressesBurn {
         BurnAll(burner, value);
 		Transfer(burner, 0x0, value);
     }
+    
+    function getTotalSupply() public returns(uint256) {
+        return totalSupply;
+    }
 }
 
 contract EMERAToken is MintableToken, BurnableToken {
@@ -425,7 +429,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
     address[5] wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
 
-    EMERAToken public token = EMERAToken(0xe0e593db82dd020e9625e24bfe4ed8d2d631c168);
+    EMERAToken public token = EMERAToken(0xd97c302e9b5ee38ab900d3a07164c2ad43ffc044);
 
     uint256 public start;
 
@@ -634,10 +638,16 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
     }
     
     function additionalTokenYearlyCreation() public onlyOwner {
-        require(investmentYearStart != 0 && now.sub(investmentYearStart) >= 5 * 60);
+        require(investmentYearStart != 0 && now.sub(investmentYearStart) >= 5 * 60); // 5 minutes! change for prod (1 year)
+        uint256 tokCurrentSupply = token.getTotalSupply();
         investmentYearStart = 0;
-        remainTokens = remainTokens.add(investmentYearTokenFunds.mul(5).div(1000));
+        remainTokens = remainTokens.add(tokCurrentSupply.mul(5).div(1000));
     }
+    
+   function resetremainingtokens() public onlyOwner {
+        require(start + period * 1 minutes < now || start > now);
+        remainTokens = 0 ;
+   }
 
 }
 
