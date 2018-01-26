@@ -517,7 +517,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
         rate = _rate;
         bonusPercentage = _bonusPercentage;
         lastTimeRateChange = now;
-        hardCapRound = _hardCap.mul(100000000).add(remainTokens);;
+        hardCapRound = _hardCap.mul(100000000).add(remainTokens);
         remainTokens = hardCapRound;
         currentRate = calcCurrentRate();
         currentStatCount = 0;
