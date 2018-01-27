@@ -429,7 +429,7 @@ contract GEMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
     address[5] wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
 
-    GEMERAToken public token = EMERAToken(0xd97c302e9b5ee38ab900d3a07164c2ad43ffc044);
+    GEMERAToken public token = GEMERAToken(0xd97c302e9b5ee38ab900d3a07164c2ad43ffc044);
 
     uint256 public start;
 
