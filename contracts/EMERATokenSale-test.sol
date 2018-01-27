@@ -415,9 +415,9 @@ contract BurnableToken is StandardToken, AddressesBurn {
 
 contract EMERAToken is MintableToken, BurnableToken {
 
-  string public constant name = "EMERA TOKEN";
+  string public constant name = "GEMERA TOKEN";
 
-  string public constant symbol = "EMA";
+  string public constant symbol = "GEMA";
 
   uint32 public constant decimals = 8;
 
