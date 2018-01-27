@@ -491,7 +491,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 		currentRate = 0;
     }
     
-    function cancelRoundBeforeStart() public onlyOwner {
+    function cancelRoundSale() public onlyOwner {
        
         currentStatCount = 0;
         maxStatCount = 0;
