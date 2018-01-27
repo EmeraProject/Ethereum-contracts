@@ -413,7 +413,7 @@ contract BurnableToken is StandardToken, AddressesBurn {
     }
 }
 
-contract EMERAToken is MintableToken, BurnableToken {
+contract GEMERAToken is MintableToken, BurnableToken {
 
   string public constant name = "GEMERA TOKEN";
 
@@ -423,13 +423,13 @@ contract EMERAToken is MintableToken, BurnableToken {
 
 }
 
-contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
+contract GEMERATokenSale is Ownable, Pausable, AddressesWithdraw {
 
     using SafeMath for uint256;
 
     address[5] wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
 
-    EMERAToken public token = EMERAToken(0xd97c302e9b5ee38ab900d3a07164c2ad43ffc044);
+    GEMERAToken public token = EMERAToken(0xd97c302e9b5ee38ab900d3a07164c2ad43ffc044);
 
     uint256 public start;
 
@@ -472,7 +472,7 @@ contract EMERATokenSale is Ownable, Pausable, AddressesWithdraw {
         _;
     }
 
-    function EMERATokenSale() {
+    function GEMERATokenSale() {
         hardCapRound = 0;
         remainTokens = 0;
         weiRaised = 0;
