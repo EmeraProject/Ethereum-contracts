@@ -65,7 +65,7 @@ contract BurnableToken is StandardToken, AddressesBurn {
     allowedAddressesForBurn[burn50] = true;
   }
 
-  function isAllowed(address _address) public constant returns (bool) {
+  function isAllowed(address _address) public view returns (bool) {
     return allowedAddressesForBurn[_address];
   }
 

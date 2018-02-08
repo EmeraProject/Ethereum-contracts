@@ -85,7 +85,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
     currentStatCount = 0;
   }
 
-  function calcCurrentRate() internal constant returns(uint) {
+  function calcCurrentRate() internal view returns(uint) {
     return rate.div(100000000);
   }
 
