@@ -17,8 +17,8 @@ contract GEMERA is AddressesWithdraw, Pausable {
     uint purshaseAmount;
   }
 
-  mapping(uint => statElem) statistics;
-  address[5] wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
+  mapping(uint => statElem) private statistics;
+  address[5] private wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
 
   uint public start;
   uint public period;
