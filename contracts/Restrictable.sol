@@ -8,10 +8,6 @@ contract Restrictable is Ownable {
 
   event RestrictedAddressChanged(address indexed restrictedAddress);
 
-  function Restrictable() public {
-    restrictedAddress = address(0);
-  }
-
   //that function could be called only ONCE!!! After that nothing could be reverted!!!
   function setRestrictedAddress(address _restrictedAddress) onlyOwner public {
     restrictedAddress = _restrictedAddress;

@@ -2,10 +2,10 @@ pragma solidity 0.4.19;
 
 import "./GEMERAToken.sol";
 import "./AddressesWithdraw.sol";
-import "./Ownable.sol";
+import "./Pausable.sol";
 import "./SafeMath.sol";
 
-contract GEMERA is Ownable, AddressesWithdraw {
+contract GEMERA is AddressesWithdraw, Pausable {
   using SafeMath for uint;
 
   GEMERAToken public token;
@@ -38,7 +38,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
   //Change for Prod
   modifier salesActive() {
     bool withinPeriod = now >= start && now <= start.add(period.mul(10 * 1 minutes));
-    require(withinPeriod); // require(withinPeriod && !paused);
+    require(withinPeriod && !paused);
     _;
   }
 
@@ -72,7 +72,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
     require(_rate >= 100000000);
     require(_bonusPercentage <= 100 && _bonusPercentage >= 0);
     require(_hardCap >= 0);
-    // require(!paused);
+    require(!paused);
 
     start = _start;
     period = _period;
