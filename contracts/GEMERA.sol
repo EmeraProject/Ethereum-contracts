@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity 0.4.19;
 
 import "./GEMERAToken.sol";
 import "./AddressesWithdraw.sol";
@@ -37,7 +37,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
 
   //Change for Prod
   modifier salesActive() {
-    bool withinPeriod = now >= start && now <= start + period * 10 * 1 minutes;
+    bool withinPeriod = now >= start && now <= start.add(period.mul(10 * 1 minutes));
     require(withinPeriod); // require(withinPeriod && !paused);
     _;
   }
@@ -67,7 +67,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
 
   // Change for Prod
   function setupNewRoundParams(uint _start, uint _period, uint _rate, uint _bonusPercentage, uint _hardCap) onlyOwner public {
-    require(remainTokens == 0 || start + period * 1 minutes < now || start > now);
+    require(remainTokens == 0 || start.add(period.mul(1 minutes)) < now || start > now);
     require(_start >= now && _period > 0);
     require(_rate >= 100000000);
     require(_bonusPercentage <= 100 && _bonusPercentage >= 0);
@@ -91,7 +91,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
 
   // change for Prod
   function tryToChangeRate(uint _rate) public onlyOwner returns(bool) {
-    require(now > lastTimeRateChange + 2 minutes);
+    require(now > lastTimeRateChange.add(2 minutes));
     require(_rate >= 100000000);
 
     rate = _rate;
@@ -119,7 +119,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
     if (remainTokens < tokens) {
       uint tempPercentage = bonusPercentage.add(100);
       tokensForSale = remainTokens.mul(100).div(tempPercentage);
-      bonusTokens = remainTokens - tokensForSale;
+      bonusTokens = remainTokens.div(tokensForSale);
       tokens = remainTokens;
       purchase = currentRate.mul(tokensForSale);
       refund = weiAmount.sub(purchase);
@@ -140,7 +140,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
     weiRaised = weiRaised.add(purchase);
 
     forwardFunds(purchase);
-    
+
     TokenPurchase(msg.sender, beneficiary, purchase, tokens);
     token.mint(beneficiary, tokens);
     if (refund > 0) msg.sender.transfer(refund);
@@ -180,7 +180,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
   }
 
   function resetremainingtokens() public onlyOwner {
-    require(start + period * 1 minutes < now || start > now);
+    require(start.add(period.mul(1 minutes)) < now || start > now);
     remainTokens = 0;
   }
 }
