@@ -1,5 +1,8 @@
-var EmeraTokenSale = artifacts.require("./EMERATokenSale.sol");
+const GEMERAToken = artifacts.require('./GEMERAToken.sol');
+const GEMERA = artifacts.require('./GEMERA.sol');
 
 module.exports = function(deployer) {
-  deployer.deploy(EmeraTokenSale, {from: web3.eth.accounts[0]});
+  deployer.deploy(GEMERAToken).then(() => {
+    return deployer.deploy(GEMERA, GEMERAToken.address);
+  });
 };
