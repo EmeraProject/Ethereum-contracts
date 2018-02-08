@@ -66,7 +66,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
   }
 
   // Change for Prod
-  function setupNewRoundParams(uint _start, uint _period, uint _rate, uint _bonusPercentage, uint _hardCap) onlyOwner public returns(bool) {
+  function setupNewRoundParams(uint _start, uint _period, uint _rate, uint _bonusPercentage, uint _hardCap) onlyOwner public {
     require(remainTokens == 0 || start + period * 1 minutes < now || start > now);
     require(_start >= now && _period > 0);
     require(_rate >= 100000000);
@@ -106,7 +106,7 @@ contract GEMERA is Ownable, AddressesWithdraw {
 
   function buyTokens(address beneficiary) public salesActive payable {
     require(beneficiary != address(0));
-    require((remainTokens > 0 ) && msg.value >= 10000000000000000);
+    require((remainTokens > 0 ) && msg.value >= 10 finney);
 
     uint refund;
     uint purchase;
@@ -128,12 +128,6 @@ contract GEMERA is Ownable, AddressesWithdraw {
       purchase = weiAmount.sub(refund);
     }
 
-    forwardFunds(purchase);
-    refundFunds(refund);
-
-    token.mint(beneficiary, tokens);
-    TokenPurchase(msg.sender, beneficiary, purchase, tokens);
-
     if (currentStatCount == maxStatCount) maxStatCount = maxStatCount.add(1);
     currentStatCount = currentStatCount.add(1);
     statElem storage newStatElem = statistics[currentStatCount];
@@ -144,6 +138,12 @@ contract GEMERA is Ownable, AddressesWithdraw {
 
     remainTokens = remainTokens.sub(tokens);
     weiRaised = weiRaised.add(purchase);
+
+    forwardFunds(purchase);
+    
+    TokenPurchase(msg.sender, beneficiary, purchase, tokens);
+    token.mint(beneficiary, tokens);
+    if (refund > 0) msg.sender.transfer(refund);
   }
 
   function forwardFunds(uint _purchase) private {
@@ -163,10 +163,6 @@ contract GEMERA is Ownable, AddressesWithdraw {
         wallets[i].transfer(walletWeis[i]);
       }
     }
-  }
-
-  function refundFunds(uint _refund) private {
-    if (_refund != 0) msg.sender.transfer(_refund);
   }
 
   function getStat(uint index) public constant returns (address, uint, uint, uint) {
