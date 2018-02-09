@@ -31,13 +31,15 @@ contract GEMERA is AddressesWithdraw, Pausable {
   uint private currentRate;
   uint public currentStatCount;
   uint public maxStatCount;
+  uint private decimals = 1E8;
+  uint private magicValue = 1E8;
 
   event TokenPurchase(address indexed sender, address indexed beneficiary, uint purchase, uint tokens);
   event WalletWeis(uint purchase, uint[5]);
 
   //Change for Prod
   modifier salesActive() {
-    bool withinPeriod = now >= start && now <= start.add(period.mul(10 * 1 minutes));
+    bool withinPeriod = now >= start && now <= start.add(period.mul(1 minutes));
     require(withinPeriod && !paused);
     _;
   }
@@ -69,7 +71,7 @@ contract GEMERA is AddressesWithdraw, Pausable {
   function setupNewRoundParams(uint _start, uint _period, uint _rate, uint _bonusPercentage, uint _hardCap) onlyOwner public {
     require(remainTokens == 0 || start.add(period.mul(1 minutes)) < now || start > now);
     require(_start >= now && _period > 0);
-    require(_rate >= 100000000);
+    require(_rate >= magicValue);
     require(_bonusPercentage <= 100 && _bonusPercentage >= 0);
     require(_hardCap >= 0);
     require(!paused);
@@ -79,20 +81,20 @@ contract GEMERA is AddressesWithdraw, Pausable {
     rate = _rate;
     bonusPercentage = _bonusPercentage;
     lastTimeRateChange = now;
-    hardCapRound = _hardCap.mul(100000000).add(remainTokens);
+    hardCapRound = _hardCap.mul(decimals).add(remainTokens);
     remainTokens = hardCapRound;
     currentRate = calcCurrentRate();
     currentStatCount = 0;
   }
 
   function calcCurrentRate() internal view returns(uint) {
-    return rate.div(100000000);
+    return rate.div(decimals);
   }
 
   // change for Prod
   function tryToChangeRate(uint _rate) public onlyOwner returns(bool) {
     require(now > lastTimeRateChange.add(2 minutes));
-    require(_rate >= 100000000);
+    require(_rate >= magicValue);
 
     rate = _rate;
     currentRate = calcCurrentRate();
