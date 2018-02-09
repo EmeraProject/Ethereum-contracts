@@ -1,11 +1,10 @@
 pragma solidity 0.4.19;
 
 import "./GEMERAToken.sol";
-import "./AddressesWithdraw.sol";
 import "./Pausable.sol";
 import "./SafeMath.sol";
 
-contract GEMERA is AddressesWithdraw, Pausable {
+contract GEMERA is Pausable {
   using SafeMath for uint;
 
   GEMERAToken public token;
@@ -44,15 +43,11 @@ contract GEMERA is AddressesWithdraw, Pausable {
     _;
   }
 
-  function GEMERA(address _token) public {
+  function GEMERA(address _token, address[5] _wallets) public {
     require(_token != address(0));
 
     token = GEMERAToken(_token);
-    wallets[0] = withdraw0;
-    wallets[1] = withdraw1;
-    wallets[2] = withdraw2;
-    wallets[3] = withdraw3;
-    wallets[4] = withdraw4;
+    wallets = _wallets;
   }
 
   function cancelRoundSale() public onlyOwner {
@@ -87,11 +82,7 @@ contract GEMERA is AddressesWithdraw, Pausable {
     currentStatCount = 0;
   }
 
-  function calcCurrentRate() internal view returns(uint) {
-    return rate.div(decimals);
-  }
-
-  // change for Prod
+  // Change for Prod
   function tryToChangeRate(uint _rate) public onlyOwner returns(bool) {
     require(now > lastTimeRateChange.add(2 minutes));
     require(_rate >= magicValue);
@@ -155,10 +146,8 @@ contract GEMERA is AddressesWithdraw, Pausable {
     walletWeis[1] = _purchase.mul(20).div(100);
     walletWeis[2] = _purchase.mul(11).div(100);
     walletWeis[3] = _purchase.mul(10).div(100);
-    walletWeis[4] = _purchase.mul(9).div(100);
-    uint walletAdditionalWei = _purchase.sub(walletWeis[0]).sub(walletWeis[1]).sub(walletWeis[2]).sub(walletWeis[3]).sub(walletWeis[4]);
+    walletWeis[4] = _purchase.sub(walletWeis[0]).sub(walletWeis[1]).sub(walletWeis[2]).sub(walletWeis[3]);
 
-    walletWeis[0] = walletWeis[0].add(walletAdditionalWei);
     WalletWeis(_purchase, walletWeis);
     for(uint i = 0; i < 5; i++) {
       if(walletWeis[i] != 0) {
@@ -167,7 +156,21 @@ contract GEMERA is AddressesWithdraw, Pausable {
     }
   }
 
-  function getStat(uint index) public constant returns (address, uint, uint, uint) {
+  function additionalTokenYearlyCreation() public onlyOwner {
+    uint tokCurrentSupply = token.totalSupply();
+    remainTokens = remainTokens.add(tokCurrentSupply.mul(5).div(1000));
+  }
+
+  function resetRemainingTokens() public onlyOwner {
+    require(start.add(period.mul(1 minutes)) < now || start > now);
+    remainTokens = 0;
+  }
+
+  function calcCurrentRate() internal view returns(uint) {
+    return rate.div(decimals);
+  }
+
+  function getStat(uint index) public view returns (address, uint, uint, uint) {
     return (
       statistics[index].beneficiary,
       statistics[index].tokenSale,
@@ -176,13 +179,7 @@ contract GEMERA is AddressesWithdraw, Pausable {
     );
   }
 
-  function additionalTokenYearlyCreation() public onlyOwner {
-    uint tokCurrentSupply = token.totalSupply();
-    remainTokens = remainTokens.add(tokCurrentSupply.mul(5).div(1000));
-  }
-
-  function resetremainingtokens() public onlyOwner {
-    require(start.add(period.mul(1 minutes)) < now || start > now);
-    remainTokens = 0;
+  function getWallets() public view returns(address[5]) {
+    return wallets;
   }
 }

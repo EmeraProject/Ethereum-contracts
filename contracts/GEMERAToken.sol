@@ -9,6 +9,8 @@ contract GEMERAToken is MintableToken, BurnableToken, Restrictable {
   string public constant symbol = "GEMA";
   uint32 public constant decimals = 8;
 
+  function GEMERAToken(address[50] _addrs) public BurnableToken(_addrs) {}
+
   function transfer(address _to, uint256 _value) public notRestricted(_to) returns (bool) {
     return super.transfer(_to, _value);
   }

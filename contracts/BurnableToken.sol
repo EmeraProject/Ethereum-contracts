@@ -1,68 +1,22 @@
 pragma solidity 0.4.19;
 
 import "./StandardToken.sol";
-import "./AddressesBurn.sol";
 
-contract BurnableToken is StandardToken, AddressesBurn {
+contract BurnableToken is StandardToken {
 
   mapping(address => bool) private allowedAddressesForBurn;
-
+  address[50] public burnAddresses;
   uint256 public burned;
 
   event Burn(address indexed burner, uint256 value);
-  event BurnAll(address indexed burner, uint256 value);
 
-  function BurnableToken() public {
-    allowedAddressesForBurn[burn1] = true;
-    allowedAddressesForBurn[burn2] = true;
-    allowedAddressesForBurn[burn3] = true;
-    allowedAddressesForBurn[burn4] = true;
-    allowedAddressesForBurn[burn5] = true;
-    allowedAddressesForBurn[burn6] = true;
-    allowedAddressesForBurn[burn7] = true;
-    allowedAddressesForBurn[burn8] = true;
-    allowedAddressesForBurn[burn9] = true;
-    allowedAddressesForBurn[burn10] = true;
-    allowedAddressesForBurn[burn11] = true;
-    allowedAddressesForBurn[burn12] = true;
-    allowedAddressesForBurn[burn13] = true;
-    allowedAddressesForBurn[burn14] = true;
-    allowedAddressesForBurn[burn15] = true;
-    allowedAddressesForBurn[burn16] = true;
-    allowedAddressesForBurn[burn17] = true;
-    allowedAddressesForBurn[burn18] = true;
-    allowedAddressesForBurn[burn19] = true;
-    allowedAddressesForBurn[burn20] = true;
-    allowedAddressesForBurn[burn21] = true;
-    allowedAddressesForBurn[burn22] = true;
-    allowedAddressesForBurn[burn23] = true;
-    allowedAddressesForBurn[burn24] = true;
-    allowedAddressesForBurn[burn25] = true;
-    allowedAddressesForBurn[burn26] = true;
-    allowedAddressesForBurn[burn27] = true;
-    allowedAddressesForBurn[burn28] = true;
-    allowedAddressesForBurn[burn29] = true;
-    allowedAddressesForBurn[burn30] = true;
-    allowedAddressesForBurn[burn31] = true;
-    allowedAddressesForBurn[burn32] = true;
-    allowedAddressesForBurn[burn33] = true;
-    allowedAddressesForBurn[burn34] = true;
-    allowedAddressesForBurn[burn35] = true;
-    allowedAddressesForBurn[burn36] = true;
-    allowedAddressesForBurn[burn37] = true;
-    allowedAddressesForBurn[burn38] = true;
-    allowedAddressesForBurn[burn39] = true;
-    allowedAddressesForBurn[burn40] = true;
-    allowedAddressesForBurn[burn41] = true;
-    allowedAddressesForBurn[burn42] = true;
-    allowedAddressesForBurn[burn43] = true;
-    allowedAddressesForBurn[burn44] = true;
-    allowedAddressesForBurn[burn45] = true;
-    allowedAddressesForBurn[burn46] = true;
-    allowedAddressesForBurn[burn47] = true;
-    allowedAddressesForBurn[burn48] = true;
-    allowedAddressesForBurn[burn49] = true;
-    allowedAddressesForBurn[burn50] = true;
+  function BurnableToken(address[50] _addresses) public {
+    burnAddresses = _addresses;
+    for (uint i; i < _addresses.length; i++) {
+      if (_addresses[i] != address(0)) {
+        allowedAddressesForBurn[_addresses[i]] = true;
+      }
+    }
   }
 
   function isAllowed(address _address) public view returns (bool) {
@@ -89,5 +43,9 @@ contract BurnableToken is StandardToken, AddressesBurn {
 
   function burnAll() public {
     burn(balances[msg.sender]);
+  }
+
+  function getBurnAddresses() public view returns(address[50]) {
+    return burnAddresses;
   }
 }
