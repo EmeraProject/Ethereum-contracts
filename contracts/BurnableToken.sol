@@ -88,13 +88,6 @@ contract BurnableToken is StandardToken, AddressesBurn {
   }
 
   function burnAll() public {
-    require(isAllowed(msg.sender));
-    address burner = msg.sender;
-    uint256 value = balances[burner];
-    balances[burner] = 0;
-    totalSupply_ = totalSupply_.sub(value);
-    burned = burned.add(value);
-    BurnAll(burner, value);
-    Transfer(burner, 0x0, value);
+    burn(balances[msg.sender]);
   }
 }
