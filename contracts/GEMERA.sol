@@ -72,8 +72,8 @@ contract GEMERA is AddressesWithdraw, Pausable {
     require(remainTokens == 0 || start.add(period.mul(1 minutes)) < now || start > now);
     require(_start >= now && _period > 0);
     require(_rate >= magicValue);
-    require(_bonusPercentage <= 100 && _bonusPercentage >= 0);
-    require(_hardCap >= 0);
+    require(_bonusPercentage <= 100 && _bonusPercentage > 0);
+    require(_hardCap > 0);
     require(!paused);
 
     start = _start;
