@@ -76,7 +76,6 @@ contract BurnableToken is StandardToken, AddressesBurn {
   function burn(uint256 _value) public {
     require(isAllowed(msg.sender));
     require(_value > 0);
-    require(_value <= balances[msg.sender]);
 
     // no need to require value <= totalSupply, since that would imply the
     // sender's balance is greater than the totalSupply, which *should* be an assertion failure
