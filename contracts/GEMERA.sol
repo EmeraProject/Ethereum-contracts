@@ -48,11 +48,11 @@ contract GEMERA is AddressesWithdraw, Pausable {
     require(_token != address(0));
 
     token = GEMERAToken(_token);
-    wallets[0] = withdraw1;
-    wallets[1] = withdraw2;
-    wallets[2] = withdraw3;
-    wallets[3] = withdraw4;
-    wallets[4] = withdraw5;
+    wallets[0] = withdraw0;
+    wallets[1] = withdraw1;
+    wallets[2] = withdraw2;
+    wallets[3] = withdraw3;
+    wallets[4] = withdraw4;
   }
 
   function cancelRoundSale() public onlyOwner {
