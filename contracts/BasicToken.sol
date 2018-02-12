@@ -14,7 +14,7 @@ contract BasicToken is ERC20Basic {
 
   mapping(address => uint256) internal balances;
 
-  uint256 totalSupply_;
+  uint256 internal totalSupply_;
 
   /**
   * @dev total number of tokens in existence
