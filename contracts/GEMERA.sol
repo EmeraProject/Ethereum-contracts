@@ -16,8 +16,8 @@ contract GEMERA is Pausable {
     uint purshaseAmount;
   }
 
-  mapping(uint => statElem) private statistics;
-  address[5] private wallets; //wallets for withdraw funds collecting from smart contract - 50%-20%-11%-10%-9%
+  mapping(uint => statElem) public statistics;
+  address[5] private wallets;
 
   uint public start;
   uint public period;
@@ -38,8 +38,7 @@ contract GEMERA is Pausable {
 
   //Change for Prod
   modifier salesActive() {
-    bool withinPeriod = now >= start && now <= start.add(period.mul(1 minutes));
-    require(withinPeriod && !paused);
+    require(now >= start && now <= start.add(period.mul(1 minutes)));
     _;
   }
 
@@ -63,13 +62,12 @@ contract GEMERA is Pausable {
   }
 
   // Change for Prod
-  function setupNewRoundParams(uint _start, uint _period, uint _rate, uint _bonusPercentage, uint _hardCap) onlyOwner public {
+  function setupNewRoundParams(uint _start, uint _period, uint _rate, uint _bonusPercentage, uint _hardCap) public onlyOwner whenNotPaused {
     require(remainTokens == 0 || start.add(period.mul(1 minutes)) < now || start > now);
     require(_start >= now && _period > 0);
     require(_rate >= magicValue);
     require(_bonusPercentage <= 100 && _bonusPercentage > 0);
     require(_hardCap > 0);
-    require(!paused);
 
     start = _start;
     period = _period;
@@ -97,7 +95,7 @@ contract GEMERA is Pausable {
     buyTokens(msg.sender);
   }
 
-  function buyTokens(address beneficiary) public salesActive payable {
+  function buyTokens(address beneficiary) public salesActive whenNotPaused payable {
     require(beneficiary != address(0));
     require((remainTokens > 0 ) && msg.value >= 10 finney);
 
@@ -168,15 +166,6 @@ contract GEMERA is Pausable {
 
   function calcCurrentRate() internal view returns(uint) {
     return rate.div(decimals);
-  }
-
-  function getStat(uint index) public view returns (address, uint, uint, uint) {
-    return (
-      statistics[index].beneficiary,
-      statistics[index].tokenSale,
-      statistics[index].tokenBonus,
-      statistics[index].purshaseAmount
-    );
   }
 
   function getWallets() public view returns(address[5]) {

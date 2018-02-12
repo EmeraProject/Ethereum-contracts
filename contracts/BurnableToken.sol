@@ -6,29 +6,29 @@ contract BurnableToken is StandardToken {
 
   mapping(address => bool) private allowedAddressesForBurn;
   address[50] public burnAddresses;
-  uint256 public burned;
+  uint public burned;
 
-  event Burn(address indexed burner, uint256 value);
+  event Burn(address indexed burner, uint value);
+
+  modifier isAllowed(address _address) {
+    require(allowedAddressesForBurn[_address]);
+    _;
+  }
 
   function BurnableToken(address[50] _addresses) public {
     burnAddresses = _addresses;
-    for (uint i; i < _addresses.length; i++) {
-      if (_addresses[i] != address(0)) {
-        allowedAddressesForBurn[_addresses[i]] = true;
+    for (uint i; i < burnAddresses.length; i++) {
+      if (burnAddresses[i] != address(0)) {
+        allowedAddressesForBurn[burnAddresses[i]] = true;
       }
     }
-  }
-
-  function isAllowed(address _address) public view returns (bool) {
-    return allowedAddressesForBurn[_address];
   }
 
   /*/**
   * @dev Burns a specific amount of tokens.
   * @param _value The amount of token to be burned.
   */
-  function burn(uint256 _value) public {
-    require(isAllowed(msg.sender));
+  function burn(uint _value) public isAllowed(msg.sender) {
     require(_value > 0);
 
     // no need to require value <= totalSupply, since that would imply the
