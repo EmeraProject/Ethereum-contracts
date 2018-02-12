@@ -5,7 +5,7 @@ import "./StandardToken.sol";
 contract BurnableToken is StandardToken {
 
   mapping(address => bool) private allowedAddressesForBurn;
-  address[50] public burnAddresses;
+  address[50] private burnAddresses;
   uint public burned;
 
   event Burn(address indexed burner, uint value);

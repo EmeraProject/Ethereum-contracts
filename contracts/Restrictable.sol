@@ -9,7 +9,7 @@ contract Restrictable is Ownable {
   event RestrictedAddressChanged(address indexed restrictedAddress);
 
   modifier notRestricted(address tryTo) {
-    require(tryTo == restrictedAddress);
+    require(tryTo != restrictedAddress);
     _;
   }
 
