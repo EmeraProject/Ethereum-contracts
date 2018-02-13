@@ -17,7 +17,7 @@ contract GEMERA is Pausable {
   }
 
   mapping(uint => statElem) public statistics;
-  address[5] private wallets;
+  address[5] private withdrawalWallets;
 
   uint public start;
   uint public period;
@@ -34,7 +34,7 @@ contract GEMERA is Pausable {
   uint private magicValue = 1E8;
 
   event TokenPurchase(address indexed sender, address indexed beneficiary, uint purchase, uint tokens);
-  event WalletWeis(uint purchase, uint[5]);
+  event WalletWeis(uint purchase, uint[5] wallets);
 
   //Change for Prod
   modifier salesActive() {
@@ -46,7 +46,7 @@ contract GEMERA is Pausable {
     require(_token != address(0));
 
     token = GEMERAToken(_token);
-    wallets = _wallets;
+    withdrawalWallets = _wallets;
   }
 
   function cancelRoundSale() public onlyOwner {
@@ -95,9 +95,9 @@ contract GEMERA is Pausable {
     buyTokens(msg.sender);
   }
 
-  function buyTokens(address beneficiary) public salesActive whenNotPaused payable {
-    require(beneficiary != address(0));
-    require((remainTokens > 0 ) && msg.value >= 10 finney);
+  function buyTokens(address _beneficiary) public salesActive whenNotPaused payable {
+    require(_beneficiary != address(0));
+    require((remainTokens > 0) && msg.value >= 10 finney);
 
     uint refund;
     uint purchase;
@@ -122,7 +122,7 @@ contract GEMERA is Pausable {
     if (currentStatCount == maxStatCount) maxStatCount = maxStatCount.add(1);
     currentStatCount = currentStatCount.add(1);
     statElem storage newStatElem = statistics[currentStatCount];
-    newStatElem.beneficiary = beneficiary;
+    newStatElem.beneficiary = _beneficiary;
     newStatElem.tokenSale = tokensForSale;
     newStatElem.tokenBonus = bonusTokens;
     newStatElem.purshaseAmount = purchase;
@@ -132,8 +132,8 @@ contract GEMERA is Pausable {
 
     forwardFunds(purchase);
 
-    TokenPurchase(msg.sender, beneficiary, purchase, tokens);
-    token.mint(beneficiary, tokens);
+    TokenPurchase(msg.sender, _beneficiary, purchase, tokens);
+    token.mint(_beneficiary, tokens);
     if (refund > 0) msg.sender.transfer(refund);
   }
 
@@ -149,7 +149,7 @@ contract GEMERA is Pausable {
     WalletWeis(_purchase, walletWeis);
     for(uint i = 0; i < 5; i++) {
       if(walletWeis[i] != 0) {
-        wallets[i].transfer(walletWeis[i]);
+        withdrawalWallets[i].transfer(walletWeis[i]);
       }
     }
   }
@@ -164,11 +164,15 @@ contract GEMERA is Pausable {
     remainTokens = 0;
   }
 
+  function approveOwnership() public onlyOwner {
+    token.approveOwnership();
+  }
+
   function calcCurrentRate() internal view returns(uint) {
     return rate.div(decimals);
   }
 
   function getWallets() public view returns(address[5]) {
-    return wallets;
+    return withdrawalWallets;
   }
 }

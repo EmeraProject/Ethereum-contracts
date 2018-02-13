@@ -30,6 +30,8 @@ contract('GEMERAToken', function (accounts) {
     await this.token.transfer(accounts[1], 1000, { from: accounts[0] }).should.be.fulfilled;
     await this.token.setRestrictedAddress(accounts[1]);
     await this.token.transfer(accounts[1], 1000, { from: accounts[0] }).should.be.rejectedWith(EVMRevert);
+    await this.token.approve(accounts[1], 100, { from: accounts[0] });
+    await this.token.transferFrom(accounts[0], accounts[1], 100).should.be.rejectedWith(EVMRevert);
   });
 
   it('burnable list', async function () {
