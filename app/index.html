@@ -78,13 +78,9 @@
             <td>Paused?</td>
             <td id="paused"></td>
           </tr>
-
         </tbody>
       </table>
     </div>
-
-
-
     <h2>EMERA Token Description</h2>
     <div class="table-responsive">
       <table class="table table-bordered">
@@ -114,11 +110,7 @@
         </tbody>
       </table>
     </div>
-
-
-
   </div>
-
   <div class="col-sm-offset-1 col-sm-5 margin-top-3">
       <h2 style='border-bottom:1px solid #ccc;'>Owner Functions</h2>
         <br>
@@ -133,7 +125,6 @@
         <a onclick="pause()" class="btn btn-primary">Pause</a>
         <a onclick="unpause()" class="col-sm-offset-1 btn btn-primary">Unpause</a>
         <br>
-
         <br>
         <div class="border">
             <input type="text" id="start-value", class="col-sm-13" placeholder="Enter the start time for new Round in UNIX timestamp format"/>
@@ -155,10 +146,8 @@
           <br>
           <a onclick="setupNewPrice()" class="btn btn-primary">Setup New Price</a>
         </div>
-                      
         <br>
         <br>
-        
         <h4 style='border-bottom:4px solid #ccc;'>Work with Token</h4>
         <br>
         <br>
@@ -206,33 +195,27 @@
         <a href="./list.html" target="_blank" class="btn btn-success">See List</a>
         <br>
         <br>
-  </div>
-
-
-</div>
- 
-<div class="">
-  <div>
-
-    <div class="margin-top-3 col-md-12">
-        <h2>Transaction Tracker</h2>
-        
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Hash</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody id="log-rows">
-        </tbody>
-      </table>
     </div>
   </div>
-</div>
-
+  <div class="">
+    <div>
+      <div class="margin-top-3 col-md-12">
+          <h2>Transaction Tracker</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Hash</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="log-rows">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
 <script src="./app.js"></script>
