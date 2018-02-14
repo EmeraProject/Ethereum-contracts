@@ -125,6 +125,21 @@ async function onlyBalanceForCurrentCustomer () {
   $('#totalCurrentAddress').html((balance / decimals).toString())
 }
 
+async function updateWhiteList () {
+  const count = (await crowdsaleInstance.lengthWhiteList()).toNumber()
+  if (count > 0) {
+    const tbody = $('#white-list-table > tbody').empty()
+    for (let i = 0; i < count; i++) {
+      const user = await crowdsaleInstance.whiteUsers(i)
+      tbody.append(
+        $('<tr />').append(
+          $(`<td>${user}</td>`)
+        )
+      )
+    }
+  }
+}
+
 function onlyUntilStartJs () {
   setInterval(function () {
     let begin = Number(startTime)
@@ -198,6 +213,7 @@ async function populateContractInfo () {
   onlyTotalSypply()
   onlyTotalBurned()
   onlyBalanceForCurrentCustomer()
+  updateWhiteList()
 }
 
 window.setupRound = function () {
@@ -359,6 +375,18 @@ window.transferOwner = function () {
       transactionTracker()
       $('#msg-transfer').html('')
     }).catch(function (e) { if (e) { $('#msg-transfer').html('Something goes wrong.') } })
+  }
+}
+
+window.whitelistAddress = async function () {
+  const users = $('#white-addresses').val()
+  if (users) {
+    const arr = users.replace(/\s/g, '').split(',')
+    console.log(arr)
+    await crowdsaleInstance.whitelistAddress(arr, { from: web3.eth.accounts[0], gas: 6000000 })
+    updateWhiteList()
+  } else {
+    $('#msg-white').html('Empty values are not allowed!')
   }
 }
 
