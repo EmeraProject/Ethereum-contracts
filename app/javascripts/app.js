@@ -9,19 +9,23 @@ import { default as moment } from 'moment'
 import tokenArtifacts from '../../build/contracts/GEMERAtoken.json'
 import crowdsaleArtifacts from '../../build/contracts/GEMERA.json'
 
-var token = contract(tokenArtifacts)
-var crowdsale = contract(crowdsaleArtifacts)
+const tokenContract = contract(tokenArtifacts)
+const crowdsaleContract = contract(crowdsaleArtifacts)
+
+const decimals = 1E8
+const format = 'MMMM DD YYYY, h:mm:ss'
 
 let { web3 } = window
+let tokenInstance
+let crowdsaleInstance
 
 let startTime
 let endTime
 let lastTimeRate
 let inputStart
 let inputPeriod
-let currentRate
 
-window.addEventListener('load', function () {
+window.addEventListener('load', async function () {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
   if (typeof web3 !== 'undefined') {
     console.warn('Using web3 detected from external source.')
@@ -34,142 +38,91 @@ window.addEventListener('load', function () {
     web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:9545'))
   }
 
-  crowdsale.setProvider(web3.currentProvider)
-  token.setProvider(web3.currentProvider)
+  tokenContract.setProvider(web3.currentProvider)
+  crowdsaleContract.setProvider(web3.currentProvider)
 
-  refreshInfo()
+  tokenInstance = await tokenContract.deployed()
+  crowdsaleInstance = await crowdsaleContract.deployed()
+
+  window.refreshInfo()
   onlyUntilStartJs()
   onlyUntilEndJs()
   onlyUntilAbilityForRateChangeJs()
   setInterval(saleStatus, 5000)
 })
 
-function onlyIcoAddress () {
-  crowdsale.deployed().then(function (contractInstance) {
-    $('#ico-address').html(crowdsale.address)
-  })
+async function onlyIcoAddress () {
+  $('#ico-address').html(crowdsaleInstance.address)
 }
 
-function onlyTokenAddress () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.token().then(function (token) {
-      $('#tokenAddress').html(token)
-    })
-  })
+async function onlyTokenAddress () {
+  const token = await crowdsaleInstance.token()
+  $('#tokenAddress').html(token)
 }
 
-function onlyOwner () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.owner.call({ from: web3.eth.accounts[0] }).then(function (owner) {
-      $('#owner').html(owner)
-    })
-  })
+async function onlyOwner () {
+  const owner = await crowdsaleInstance.owner()
+  $('#owner').html(owner)
 }
 
-function onlyPaused () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.paused.call({ from: web3.eth.accounts[0] }).then(function (paused) {
-      $('#paused').html(paused.toString())
-    })
-  })
+async function onlyPaused () {
+  const paused = await crowdsaleInstance.paused()
+  $('#paused').html(paused.toString())
 }
 
-function onlyStart () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.start.call({ from: web3.eth.accounts[0] }).then(function (start) {
-      let ts = moment.unix(start)
-      startTime = Number(ts)
-      if (startTime > 0) {
-        $('#start').html((ts.utcOffset(0)).format('MMMM DD YYYY, h:mm:ss'))
-      } else {
-          $('#start').html('Start time not planned')
-      }
-    })
-  })
+async function onlyStart () {
+  const start = await crowdsaleInstance.start()
+  const ts = moment.unix(start)
+  startTime = Number(ts)
+  $('#start').html(startTime > 0 ? (ts.utcOffset(0)).format(format) : 'Start time not planned')
 }
 
-function onlyLastRateChange () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.lastTimeRateChange.call({ from: web3.eth.accounts[0] }).then(function (lastTimeRateChange) {
-      let ts = moment.unix(lastTimeRateChange)
-      lastTimeRate = Number(ts)
-      if (lastTimeRate > 0) {
-        $('#lastTimeRate').html((ts.utcOffset(0)).format('MMMM DD YYYY, h:mm:ss'))
-      } else {
-        $('#lastTimeRate').html("Rate didn't setup")
-      }
-    })
-  })
+async function onlyLastRateChange () {
+  const lastTimeRateChange = await crowdsaleInstance.lastTimeRateChange()
+  let ts = moment.unix(lastTimeRateChange)
+  lastTimeRate = Number(ts)
+  $('#lastTimeRate').html(lastTimeRate > 0 ? (ts.utcOffset(0)).format(format) : 'Rate didn`t setup')
 }
 
-function onlyPeriod () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.period.call({ from: web3.eth.accounts[0] }).then(function (period) {
-      endTime = (Number(period) * 60000) // * 60 * 24)
-      $('#period').html(period.toString())
-    })
-  })
+async function onlyPeriod () {
+  const period = await crowdsaleInstance.period()
+  endTime = (Number(period) * 60000) // * 60 * 24)
+  $('#period').html(period.toString())
 }
 
-function onlyRate () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.rate.call({ from: web3.eth.accounts[0] }).then(function (rate) {
-      $('#currentRate').html(rate.toString())
-    })
-  })
+async function onlyRate () {
+  const rate = await crowdsaleInstance.rate()
+  $('#currentRate').html(rate.toString())
 }
 
-function onlyDiscount () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.bonusPercentage.call({ from: web3.eth.accounts[0] }).then(function (bonusPercentage) {
-      $('#discount').html(bonusPercentage.toString())
-    })
-  })
+async function onlyDiscount () {
+  const bonusPercentage = await crowdsaleInstance.bonusPercentage()
+  $('#discount').html(bonusPercentage.toString())
 }
 
-function onlyHardcap () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.hardCapRound.call({ from: web3.eth.accounts[0] }).then(function (hardCapRound) {
-      hardCapRound = hardCapRound / 100000000
-      $('#hardcap').html(hardCapRound.toString())
-    })
-  })
+async function onlyHardcap () {
+  const hardCapRound = await crowdsaleInstance.hardCapRound()
+  $('#hardcap').html((hardCapRound / decimals).toString())
 }
 
-function onlyRemainTokens () {
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.remainTokens.call({ from: web3.eth.accounts[0] }).then(function (remainTokens) {
-      remainTokens = remainTokens / 100000000
-      $('#remain').html(remainTokens.toString())
-    })
-  })
+async function onlyRemainTokens () {
+  const remainTokens = await crowdsaleInstance.remainTokens()
+  $('#remain').html((remainTokens / decimals).toString())
 }
 
-function onlyTotalSypply () {
-  token.deployed().then(function (contractInstance) {
-    contractInstance.totalSupply.call({ from: web3.eth.accounts[0] }).then(function (totalSupply) {
-      totalSupply = totalSupply / 100000000
-      $('#totalSupply').html(totalSupply.toString())
-    })
-  })
+async function onlyTotalSypply () {
+  const totalSupply = await tokenInstance.totalSupply()
+  $('#totalSupply').html((totalSupply / decimals).toString())
 }
 
-function onlyTotalBurned () {
-  token.deployed().then(function (contractInstance) {
-    contractInstance.burned.call({ from: web3.eth.accounts[0] }).then(function (burned) {
-      burned = burned / 100000000
-      $('#totalBurned').html(burned.toString())
-    })
-  })
+async function onlyTotalBurned () {
+  const burned = await tokenInstance.burned()
+  $('#totalBurned').html((burned / decimals).toString())
 }
 
-function onlyBalanceForCurrentCustomer () {
-  token.deployed().then(function (contractInstance) {
-    contractInstance.balanceOf.call(web3.eth.accounts[0], { from: web3.eth.accounts[0] }).then(function (balance) {
-      balance = balance / 100000000
-      $('#totalCurrentAddress').html(balance.toString())
-    })
-  })
+async function onlyBalanceForCurrentCustomer () {
+  const balance = await tokenInstance.balanceOf(web3.eth.accounts[0])
+  $('#totalCurrentAddress').html((balance / decimals).toString())
 }
 
 function onlyUntilStartJs () {
@@ -181,7 +134,7 @@ function onlyUntilStartJs () {
         let hours = Math.floor(diffTime / 3600)
         let minutes = Math.floor((diffTime - hours * 3600) / 60)
         let seconds = Math.floor((diffTime - hours * 3600 - minutes * 60))
-        $('#until-start').html(hours + ':' + minutes + ':' + seconds)
+        $('#until-start').html(`${hours}:${minutes}:${seconds}`)
       } else {
         $('#until-start').html('Has already begun')
       }
@@ -200,7 +153,7 @@ function onlyUntilEndJs () {
         let hours = Math.floor(diffTime / 3600)
         let minutes = Math.floor((diffTime - hours * 3600) / 60)
         let seconds = Math.floor((diffTime - hours * 3600 - minutes * 60))
-        $('#until-end').html(hours + ':' + minutes + ':' + seconds)
+        $('#until-end').html(`${hours}:${minutes}:${seconds}`)
       } else {
         $('#until-end').html('Already finished')
       }
@@ -219,7 +172,7 @@ function onlyUntilAbilityForRateChangeJs () {
         let hours = Math.floor(diffTime / 3600)
         let minutes = Math.floor((diffTime - hours * 3600) / 60)
         let seconds = Math.floor((diffTime - hours * 3600 - minutes * 60))
-        $('#until-rateChange').html(hours + ':' + minutes + ':' + seconds)
+        $('#until-rateChange').html(`${hours}:${minutes}:${seconds}`)
       } else {
         $('#until-rateChange').html("Now it's possible to change rate")
       }
@@ -264,8 +217,7 @@ window.setupRound = function () {
     $('#hardcapRound-value').val('')
     startTime = ''
     endTime = ''
-    crowdsale.deployed().then(function (contractInstance) {
-      contractInstance.setupNewRoundParams(start, period, rate, discount, hardcapRound,
+    crowdsaleInstance.setupNewRoundParams(start, period, rate, discount, hardcapRound,
         { gas: 200000, from: web3.eth.accounts[0] }).then(function () {
           onlyStart()
           onlyPeriod()
@@ -275,8 +227,7 @@ window.setupRound = function () {
           onlyRemainTokens()
           onlyLastRateChange()
           $('#msg-ico').html('')
-      }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-    })
+        }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
   }
 }
 
@@ -284,49 +235,41 @@ window.setupNewPrice = function () {
   const newRate = $('#new-rate-setup').val()
   $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
   $('#new-rate-setup').val('')
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.tryToChangeRate(newRate, { gas: 200000, from: web3.eth.accounts[0] }).then(function () {
-      onlyRate()
-      onlyLastRateChange()
-      $('#msg-ico').html('')
-    }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-  })
+  crowdsaleInstance.tryToChangeRate(newRate, { gas: 200000, from: web3.eth.accounts[0] }).then(function () {
+    onlyRate()
+    onlyLastRateChange()
+    $('#msg-ico').html('')
+  }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
 }
 
 window.cancelRound = function () {
   $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.cancelRoundBeforeStart({ gas: 200000, from: web3.eth.accounts[0] }).then(function () {
-      onlyStart()
-      onlyPeriod()
-      onlyRate()
-      onlyDiscount()
-      onlyHardcap()
-      onlyRemainTokens()
-      onlyLastRateChange()
-      $('#msg-ico').html('')
-    }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-  })
+  crowdsaleInstance.cancelRoundBeforeStart({ gas: 200000, from: web3.eth.accounts[0] }).then(function () {
+    onlyStart()
+    onlyPeriod()
+    onlyRate()
+    onlyDiscount()
+    onlyHardcap()
+    onlyRemainTokens()
+    onlyLastRateChange()
+    $('#msg-ico').html('')
+  }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
 }
 
 window.mintYearly = function () {
   $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.additionalTokenYearlyCreation({ gas: 200000, from: web3.eth.accounts[0] }).then(function () {
-      onlyRemainTokens()
-      $('#msg-ico').html('')
-    }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-  })
+  crowdsaleInstance.additionalTokenYearlyCreation({ gas: 200000, from: web3.eth.accounts[0] }).then(function () {
+    onlyRemainTokens()
+    $('#msg-ico').html('')
+  }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
 }
 
 window.eraseRemainedTokens = function () {
   $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.resetremainingtokens({ gas: 200000, from: web3.eth.accounts[0] }).then(function () {
-      onlyRemainTokens()
-      $('#msg-ico').html('')
-    }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-  })
+  crowdsaleInstance.resetremainingtokens({ gas: 200000, from: web3.eth.accounts[0] }).then(function () {
+    onlyRemainTokens()
+    $('#msg-ico').html('')
+  }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
 }
 
 async function transactionTracker () {
@@ -335,15 +278,22 @@ async function transactionTracker () {
     return data.slice()
   })
   for (let i = 0; i < logs.length; i++) {
-    $('#log-rows').append('<tr><td><a href="https://rinkeby.etherscan.io/tx/' + logs[i].hash + '" target="_blank">' + logs[i].hash + '</a></td><td>' + logs[i].from + '</td><td>' + logs[i].to + '</td><td>' + logs[i].value + '</td></tr>')
+    $('#log-rows').append(
+      $('<tr />').append(
+        $(`<td><a href="https://rinkeby.etherscan.io/tx/${logs[i].hash}" target="_blank">${logs[i].hash}</a></td>`),
+        $(`<td>${logs[i].from}</td>`),
+        $(`<td>${logs[i].to}</td>`),
+        $(`<td>${logs[i].value}</td>`)
+      )
+    )
   }
 }
 
 async function getTransactionsByAccount (startBlockNumber, endBlockNumber) {
-  let myaccount = web3.eth.accounts[0]
+  const myaccount = web3.eth.accounts[0]
   if (endBlockNumber == null) {
     endBlockNumber = await new Promise((resolve, reject) => {
-      return web3.eth.getBlock("latest", function(error, result) {
+      return web3.eth.getBlock('latest', function (error, result) {
         if (!error) {
           resolve(result.number)
         } else {
@@ -354,13 +304,11 @@ async function getTransactionsByAccount (startBlockNumber, endBlockNumber) {
       return data
     })
   }
-  if (startBlockNumber == null) {
-    startBlockNumber = endBlockNumber - 100
-  }
-  let array = []
+  if (startBlockNumber == null) startBlockNumber = endBlockNumber - 100
+  const array = []
   for (let i = startBlockNumber; i <= endBlockNumber; i++) {
-    var block = await new Promise((resolve, reject) => {
-      return web3.eth.getBlock(i, true, function(error, result) {
+    const block = await new Promise((resolve, reject) => {
+      return web3.eth.getBlock(i, true, function (error, result) {
         if (!error) {
           resolve(result)
         } else {
@@ -383,58 +331,50 @@ async function getTransactionsByAccount (startBlockNumber, endBlockNumber) {
 
 window.pause = function () {
   $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.pause({ gas: 100000, from: web3.eth.accounts[0] }).then(function () {
-      onlyPaused()
-      transactionTracker()
-      $('#msg-ico').html('')
-    }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-  })
+  crowdsaleInstance.pause({ gas: 100000, from: web3.eth.accounts[0] }).then(function () {
+    onlyPaused()
+    transactionTracker()
+    $('#msg-ico').html('')
+  }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
 }
 
 window.unpause = function () {
   $('#msg-ico').html('Info has been submitted and is recording to the blockchain. Please wait.')
-  crowdsale.deployed().then(function (contractInstance) {
-    contractInstance.unpause({ gas: 100000, from: web3.eth.accounts[0] }).then(function () {
-      onlyPaused()
-      transactionTracker()
-      $('#msg-ico').html('')
-    }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
-  })
+  crowdsaleInstance.unpause({ gas: 100000, from: web3.eth.accounts[0] }).then(function () {
+    onlyPaused()
+    transactionTracker()
+    $('#msg-ico').html('')
+  }).catch(function (e) { if (e) { $('#msg-ico').html('Something goes wrong.') } })
 }
 
 window.transferOwner = function () {
-  let newOwner = $('#owner-value').val()
+  const newOwner = $('#owner-value').val()
   if (!newOwner) {
     $('#msg-transfer').html('Empty values are not allowed!')
   } else {
     $('#msg-transfer').html('Info has been submitted and is recording to the blockchain. Please wait.')
     $('#owner-value').val('')
-    crowdsale.deployed().then(function (contractInstance) {
-      contractInstance.transferOwnership(newOwner, { gas: 100000, from: web3.eth.accounts[0] }).then(function () {
-        onlyOwner()
-        transactionTracker()
-        $('#msg-transfer').html('')
-      }).catch(function (e) { if (e) { $('#msg-transfer').html('Something goes wrong.') } })
-    })
+    crowdsaleInstance.transferOwnership(newOwner, { gas: 100000, from: web3.eth.accounts[0] }).then(function () {
+      onlyOwner()
+      transactionTracker()
+      $('#msg-transfer').html('')
+    }).catch(function (e) { if (e) { $('#msg-transfer').html('Something goes wrong.') } })
   }
 }
 
 window.burnTokens = function () {
   $('#msg-token').html('Info has been submitted and is recording to the blockchain. Please wait.')
-  token.deployed().then(function (contractInstance) {
-    contractInstance.burnAll({ from: web3.eth.accounts[0] }).then(function () {
-      transactionTracker()
-      onlyTotalSypply()
-      onlyTotalBurned()
-      onlyBalanceForCurrentCustomer()
-      $('#msg-token').html('')
-    }).catch(function (e) { if (e) { $('#msg-token').html('Something goes wrong.') } })
-  })
+  tokenInstance.burnAll({ from: web3.eth.accounts[0] }).then(function () {
+    transactionTracker()
+    onlyTotalSypply()
+    onlyTotalBurned()
+    onlyBalanceForCurrentCustomer()
+    $('#msg-token').html('')
+  }).catch(function (e) { if (e) { $('#msg-token').html('Something goes wrong.') } })
 }
 
 window.buyTokens = async function () {
-  let amount = $('#wei-buy-value').val()
+  const amount = $('#wei-buy-value').val()
   if (Number(amount) < Number(10000000000000000)) {
     $('#msg-buy').html('The minimum purchase is 0.01 ETH.')
   } else {
@@ -448,7 +388,12 @@ window.buyTokens = async function () {
 
 async function payed (_amount) {
   await new Promise((resolve, reject) => {
-    web3.eth.sendTransaction({ gas: 600000, from: web3.eth.accounts[0], to: crowdsale.address, value: _amount }, function (error, result) {
+    web3.eth.sendTransaction({
+      gas: 600000,
+      from: web3.eth.accounts[0],
+      to: crowdsaleInstance.address,
+      value: _amount
+    }, function (error, result) {
       if (!error) {
         resolve(result)
       } else {
@@ -465,20 +410,18 @@ function afterPayed () {
 window.transferTokens = function () {
   let address = $('#transfer-address').val()
   let amount = $('#transfer-value').val()
-  let value = Number(amount) * 100000000
+  let value = Number(amount) * decimals
   if (!address || !value) {
     $('#msg-buy').html('Empty values are not allowed!')
   } else {
     $('#msg-buy').html('Info has been submitted and is recording to the blockchain. Please wait.')
-    token.deployed().then(function (contractInstance) {
-      contractInstance.transfer(address, value, { gas: 100000, from: web3.eth.accounts[0] }).then(function () {
-        transactionTracker()
-        onlyBalanceForCurrentCustomer()
-        $('#msg-buy').html('')
-        $('#transfer-address').val('')
-        $('#transfer-value').val('')
-      }).catch(function (e) { if (e) { $('#msg-buy').html('Something goes wrong.') } })
-    })
+    tokenInstance.transfer(address, value, { gas: 100000, from: web3.eth.accounts[0] }).then(function () {
+      transactionTracker()
+      onlyBalanceForCurrentCustomer()
+      $('#msg-buy').html('')
+      $('#transfer-address').val('')
+      $('#transfer-value').val('')
+    }).catch(function (e) { if (e) { $('#msg-buy').html('Something goes wrong.') } })
   }
 }
 
@@ -493,7 +436,15 @@ $('#period-value').on('input', function (e) {
 })
 
 function showSettablePeriod (_inputStart, _inputPeriod) {
-  $('#msg-ico').html(moment.unix(_inputStart).utcOffset(0).format('MMMM DD YYYY, h:mm:ss') + '  --->  ' + moment.unix(Number(_inputStart) + (Number(_inputPeriod) * 60)).utcOffset(0).format('MMMM DD YYYY, h:mm:ss'))
+  const start = moment
+    .unix(_inputStart)
+    .utcOffset(0)
+    .format(format)
+  const end = moment
+    .unix(Number(_inputStart) + (Number(_inputPeriod) * 60))
+    .utcOffset(0)
+    .format(format)
+  $('#msg-ico').html(`${start}  --->  ${end}`)
 }
 
 function saleStatus () {

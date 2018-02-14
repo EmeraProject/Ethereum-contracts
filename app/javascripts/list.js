@@ -44,11 +44,12 @@ async function getStatistics () {
   const ether = 1E18
 
   for (let i = 0; i < count; i++) {
-    await instance.getStat(i + 1).then((stat) => {
+    await instance.statistics(i + 1).then((stat) => {
       let tokSold = (stat[1] / decimals).toString()
       let tokFree = (stat[2] / decimals).toString()
       let ethPurchase = (stat[3] / ether).toString()
-      $('#preico-rows').append(`<tr><td>${stat[0]}</td><td>${tokSold}</td><td>${tokFree}</td><td>${ethPurchase}</td></tr>`)
+      $('#preico-rows')
+        .append(`<tr><td>${stat[0]}</td><td>${tokSold}</td><td>${tokFree}</td><td>${ethPurchase}</td></tr>`)
     })
   }
 }

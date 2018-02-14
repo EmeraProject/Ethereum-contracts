@@ -6,6 +6,10 @@
   "plugins": [
     "babel"
   ],
+  "env": {
+    "browser": true,
+    "jquery": true
+  },
   "rules": {
     "key-spacing"          : 0,
     "jsx-quotes"           : [2, "prefer-single"],
