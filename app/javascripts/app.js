@@ -70,6 +70,19 @@ async function onlyPaused () {
   $('#paused').html(paused.toString())
 }
 
+async function onlyFWhite () {
+  const fWhite = await crowdsaleInstance.fWhite()
+  const btn = $('#btn-white')
+  if (fWhite) {
+    btn.text('Disable whitelist')
+    btn.attr('class', 'btn btn-success')
+  } else {
+    btn.text('Enable whitelist')
+    btn.attr('class', 'btn btn-danger')
+  }
+  $('#fwhite').html(fWhite.toString())
+}
+
 async function onlyStart () {
   const start = await crowdsaleInstance.start()
   const ts = moment.unix(start)
@@ -204,6 +217,7 @@ async function populateContractInfo () {
   onlyStart()
   onlyPeriod()
   onlyPaused()
+  onlyFWhite()
   onlyRate()
   onlyDiscount()
   onlyHardcap()
@@ -378,11 +392,15 @@ window.transferOwner = function () {
   }
 }
 
+window.switchWhiteFlag = async function () {
+  await crowdsaleInstance.switchWhiteFlag({ from: web3.eth.accounts[0] })
+  onlyFWhite()
+}
+
 window.whitelistAddress = async function () {
   const users = $('#white-addresses').val()
   if (users) {
     const arr = users.replace(/\s/g, '').split(',')
-    console.log(arr)
     await crowdsaleInstance.whitelistAddress(arr, { from: web3.eth.accounts[0], gas: 6000000 })
     updateWhiteList()
   } else {

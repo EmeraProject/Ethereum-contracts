@@ -168,8 +168,8 @@ contract GEMERA is Pausable {
     }
   }
 
-  function setWhiteFlag(bool _flag) public onlyOwner {
-    fWhite = _flag;
+  function switchWhiteFlag() public onlyOwner {
+    fWhite = !fWhite;
   }
 
   function additionalTokenYearlyCreation() public onlyOwner {

@@ -82,6 +82,10 @@
               <td>Paused?</td>
               <td id="paused"></td>
             </tr>
+            <tr>
+              <td>Whitelist enabled?</td>
+              <td id="fwhite"></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -192,7 +196,8 @@
           placeholder="Enter the addresses for white list separated by commas"
           style="margin-bottom: 1em;"
         />
-        <a onclick="whitelistAddress()" class="btn btn-warning">Send</a>
+        <a id="btn-white" onclick="switchWhiteFlag()" class="btn btn-success" style="width: 150px;">*</a>
+        <a onclick="whitelistAddress()" class="btn btn-warning">Send addresses</a>
       </div>
       <h2 style='border-bottom:1px solid #ccc;' >User Functions</h2>
       <br>

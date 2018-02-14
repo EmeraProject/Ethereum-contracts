@@ -33,10 +33,13 @@ contract('GEMERA', function (accounts) {
 
   it('white list', async function() {
     await increaseTimeTo(this.startTime);
-    await this.crowdsale.setWhiteFlag(false);
+    let fWhite = await await this.crowdsale.fWhite();
+    fWhite.should.be.bignumber.to.be.false;
     await this.crowdsale.sendTransaction({ from: accounts[1], value: ether(0.5) }).should.be.fulfilled;
     await this.crowdsale.sendTransaction({ from: accounts[2], value: ether(1.5) }).should.be.fulfilled;
-    await this.crowdsale.setWhiteFlag(true);
+    await this.crowdsale.switchWhiteFlag();
+    fWhite = await await this.crowdsale.fWhite();
+    fWhite.should.be.bignumber.to.be.true;
     await this.crowdsale.sendTransaction({ from: accounts[1], value: ether(0.5) }).should.be.rejectedWith(EVMRevert);
     await this.crowdsale.sendTransaction({ from: accounts[2], value: ether(1.5) }).should.be.rejectedWith(EVMRevert);
     await this.crowdsale.whitelistAddress([accounts[1], accounts[2]], { from: accounts[0] });
