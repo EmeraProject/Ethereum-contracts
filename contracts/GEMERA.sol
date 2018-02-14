@@ -16,6 +16,7 @@ contract GEMERA is Pausable {
     uint purshaseAmount;
   }
 
+  mapping(address => bool) public whiteList;
   mapping(uint => statElem) public statistics;
   address[5] private withdrawalWallets;
 
@@ -27,9 +28,11 @@ contract GEMERA is Pausable {
   uint public hardCapRound;
   uint public remainTokens;
   uint public weiRaised;
-  uint private currentRate;
   uint public currentStatCount;
   uint public maxStatCount;
+  bool public fWhite;
+
+  uint private currentRate;
   uint private decimals = 1E8;
   uint private magicValue = 1E8;
 
@@ -97,6 +100,7 @@ contract GEMERA is Pausable {
 
   function buyTokens(address _beneficiary) public salesActive whenNotPaused payable {
     require(_beneficiary != address(0));
+    require(!fWhite || whiteList[msg.sender]);
     require((remainTokens > 0) && msg.value >= 10 finney);
 
     uint refund;
@@ -152,6 +156,18 @@ contract GEMERA is Pausable {
         withdrawalWallets[i].transfer(walletWeis[i]);
       }
     }
+  }
+
+  function whitelistAddress (address[] users) public onlyOwner {
+    for (uint i = 0; i < users.length; i++) {
+      if (users[i] != address(0)) {
+        whiteList[users[i]] = true;
+      }
+    }
+  }
+
+  function setWhiteFlag(bool _flag) public onlyOwner {
+    fWhite = _flag;
   }
 
   function additionalTokenYearlyCreation() public onlyOwner {
