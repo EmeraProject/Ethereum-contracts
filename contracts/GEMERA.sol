@@ -16,8 +16,9 @@ contract GEMERA is Pausable {
     uint purshaseAmount;
   }
 
-  mapping(address => bool) public whiteList;
   mapping(uint => statElem) public statistics;
+  mapping(address => bool) public whiteList;
+  address[] public whiteUsers;
   address[5] private withdrawalWallets;
 
   uint public start;
@@ -160,7 +161,8 @@ contract GEMERA is Pausable {
 
   function whitelistAddress (address[] users) public onlyOwner {
     for (uint i = 0; i < users.length; i++) {
-      if (users[i] != address(0)) {
+      if (users[i] != address(0) && !whiteList[users[i]]) {
+        whiteUsers.push(users[i]);
         whiteList[users[i]] = true;
       }
     }
@@ -182,6 +184,10 @@ contract GEMERA is Pausable {
 
   function approveOwnership() public onlyOwner {
     token.approveOwnership();
+  }
+
+  function lengthWhiteList() public view returns(uint) {
+    return whiteUsers.length;
   }
 
   function calcCurrentRate() internal view returns(uint) {
