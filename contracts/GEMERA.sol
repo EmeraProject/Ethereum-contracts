@@ -31,8 +31,8 @@ contract GEMERA is Pausable {
   uint public currentStatCount;
   uint public maxStatCount;
   bool public fWhite;
+  uint public rate;
 
-  uint private rate;
   uint private decimals = 1E18;
 
   event TokenPurchase(address indexed sender, address indexed beneficiary, uint purchase, uint tokens);
@@ -66,6 +66,7 @@ contract GEMERA is Pausable {
   function setupNewRoundParams(uint _start, uint _period, uint _rate, uint _bonusPercentage, uint _hardCap) public onlyOwner whenNotPaused {
     require(remainTokens == 0 || start.add(period.mul(1 minutes)) < now || start > now);
     require(_start >= now && _period > 0);
+    require(_rate > 0);
     require(_bonusPercentage <= 100 && _bonusPercentage > 0);
     require(_hardCap > 0);
 
@@ -82,6 +83,7 @@ contract GEMERA is Pausable {
   // Change for Prod
   function tryToChangeRate(uint _rate) public onlyOwner returns(bool) {
     require(now > lastTimeRateChange.add(2 minutes));
+    require(_rate > 0);
 
     rate = _rate;
     lastTimeRateChange = now;
@@ -112,7 +114,10 @@ contract GEMERA is Pausable {
       tokens = remainTokens;
       purchase = tokensForSale.mul(rate).div(decimals);
       refund = weiAmount.sub(purchase);
+    } else {
+      purchase = weiAmount.sub(refund);
     }
+
 
     if (currentStatCount == maxStatCount) maxStatCount = maxStatCount.add(1);
     currentStatCount = currentStatCount.add(1);
