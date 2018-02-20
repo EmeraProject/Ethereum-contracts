@@ -56,6 +56,7 @@ contract('GEMERA', function (accounts) {
   });
 
   it('white list', async function() {
+    // Add user
     await increaseTimeTo(this.startTime + duration.minutes(1));
     let fWhite = await await this.crowdsale.fWhite();
     fWhite.should.be.false;
@@ -71,6 +72,13 @@ contract('GEMERA', function (accounts) {
     count.should.be.bignumber.equal(2);
     await this.crowdsale.sendTransaction({ from: accounts[1], value: ether(0.5) }).should.be.fulfilled;
     await this.crowdsale.sendTransaction({ from: accounts[2], value: ether(1.5) }).should.be.fulfilled;
+
+    // Delete user
+    let status = await this.crowdsale.whiteList(accounts[1]);
+    status.should.be.true;
+    await this.crowdsale.deleteUserFromWhitelist(accounts[1]);
+    status = await this.crowdsale.whiteList(accounts[1]);
+    status.should.be.false;
   });
 
   it('buy tokens', async function() {

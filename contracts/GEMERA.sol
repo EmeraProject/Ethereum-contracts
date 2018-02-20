@@ -154,13 +154,17 @@ contract GEMERA is Pausable {
     }
   }
 
-  function whitelistAddress (address[] users) public onlyOwner {
-    for (uint i = 0; i < users.length; i++) {
-      if (users[i] != address(0) && !whiteList[users[i]]) {
-        whiteUsers.push(users[i]);
-        whiteList[users[i]] = true;
+  function whitelistAddress(address[] _users) public onlyOwner {
+    for (uint i = 0; i < _users.length; i++) {
+      if (_users[i] != address(0) && !whiteList[_users[i]]) {
+        whiteUsers.push(_users[i]);
+        whiteList[_users[i]] = true;
       }
     }
+  }
+
+  function deleteUserFromWhitelist(address _user) public onlyOwner {
+    whiteList[_user] = false;
   }
 
   function switchWhiteFlag() public onlyOwner {
