@@ -23,7 +23,6 @@ contract GEMERA is Pausable {
 
   uint public start;
   uint public period;
-  uint public rate;
   uint public bonusPercentage;
   uint public lastTimeRateChange;
   uint public hardCapRound;
@@ -33,9 +32,8 @@ contract GEMERA is Pausable {
   uint public maxStatCount;
   bool public fWhite;
 
-  uint private currentRate;
-  uint private decimals = 1E8;
-  uint private magicValue = 1E8;
+  uint private rate;
+  uint private decimals = 1E18;
 
   event TokenPurchase(address indexed sender, address indexed beneficiary, uint purchase, uint tokens);
   event WalletWeis(uint purchase, uint[5] wallets);
@@ -58,10 +56,9 @@ contract GEMERA is Pausable {
     maxStatCount = 0;
     start = 0;
     period = 0;
-    rate = 0;
     bonusPercentage = 0;
     lastTimeRateChange = 0;
-    currentRate = 0;
+    rate = 0;
     hardCapRound = 0;
   }
 
@@ -69,28 +66,24 @@ contract GEMERA is Pausable {
   function setupNewRoundParams(uint _start, uint _period, uint _rate, uint _bonusPercentage, uint _hardCap) public onlyOwner whenNotPaused {
     require(remainTokens == 0 || start.add(period.mul(1 minutes)) < now || start > now);
     require(_start >= now && _period > 0);
-    require(_rate >= magicValue);
     require(_bonusPercentage <= 100 && _bonusPercentage > 0);
     require(_hardCap > 0);
 
     start = _start;
     period = _period;
-    rate = _rate;
     bonusPercentage = _bonusPercentage;
     lastTimeRateChange = now;
     hardCapRound = _hardCap.mul(decimals).add(remainTokens);
     remainTokens = hardCapRound;
-    currentRate = calcCurrentRate();
+    rate = _rate;
     currentStatCount = 0;
   }
 
   // Change for Prod
   function tryToChangeRate(uint _rate) public onlyOwner returns(bool) {
     require(now > lastTimeRateChange.add(2 minutes));
-    require(_rate >= magicValue);
 
     rate = _rate;
-    currentRate = calcCurrentRate();
     lastTimeRateChange = now;
     return true;
   }
@@ -108,7 +101,7 @@ contract GEMERA is Pausable {
     uint purchase;
 
     uint weiAmount = msg.value;
-    uint tokensForSale = weiAmount.div(currentRate);
+    uint tokensForSale = weiAmount.mul(decimals).div(rate);
     uint bonusTokens = tokensForSale.mul(bonusPercentage).div(100);
     uint tokens = tokensForSale.add(bonusTokens);
 
@@ -117,11 +110,8 @@ contract GEMERA is Pausable {
       tokensForSale = remainTokens.mul(100).div(tempPercentage);
       bonusTokens = remainTokens.div(tokensForSale);
       tokens = remainTokens;
-      purchase = currentRate.mul(tokensForSale);
+      purchase = tokensForSale.mul(rate).div(decimals);
       refund = weiAmount.sub(purchase);
-    } else {
-      refund = weiAmount.mod(currentRate);
-      purchase = weiAmount.sub(refund);
     }
 
     if (currentStatCount == maxStatCount) maxStatCount = maxStatCount.add(1);
@@ -188,10 +178,6 @@ contract GEMERA is Pausable {
 
   function lengthWhiteList() public view returns(uint) {
     return whiteUsers.length;
-  }
-
-  function calcCurrentRate() internal view returns(uint) {
-    return rate.div(decimals);
   }
 
   function getWallets() public view returns(address[5]) {

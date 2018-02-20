@@ -7,7 +7,7 @@ import "./Restrictable.sol";
 contract GEMERAToken is MintableToken, BurnableToken, Restrictable {
   string public constant name = "GEMERA TOKEN";
   string public constant symbol = "GEMA";
-  uint32 public constant decimals = 8;
+  uint32 public constant decimals = 18;
 
   function GEMERAToken(address[50] _addrs) public BurnableToken(_addrs) {}
 
