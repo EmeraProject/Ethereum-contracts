@@ -15,9 +15,13 @@ contract GEMERA is Pausable {
     uint tokenBonus;
     uint purshaseAmount;
   }
+  struct user {
+    bool state;
+    bool addr;
+  }
 
   mapping(uint => statElem) public statistics;
-  mapping(address => bool) public whiteList;
+  mapping(address => user) public whiteList;
   address[] public whiteUsers;
   address[5] private withdrawalWallets;
 
@@ -96,7 +100,7 @@ contract GEMERA is Pausable {
 
   function buyTokens(address _beneficiary) public salesActive whenNotPaused payable {
     require(_beneficiary != address(0));
-    require(!fWhite || whiteList[msg.sender]);
+    require(!fWhite || whiteList[msg.sender].state);
     require((remainTokens > 0) && msg.value >= 10 finney);
 
     uint refund;
@@ -156,15 +160,20 @@ contract GEMERA is Pausable {
 
   function whitelistAddress(address[] _users) public onlyOwner {
     for (uint i = 0; i < _users.length; i++) {
-      if (_users[i] != address(0) && !whiteList[_users[i]]) {
-        whiteUsers.push(_users[i]);
-        whiteList[_users[i]] = true;
+      if (_users[i] != address(0) && !whiteList[_users[i]].state) {
+        if (!whiteList[_users[i]].addr) {
+          whiteList[_users[i]].addr = true;
+          whiteUsers.push(_users[i]);
+        }
+        whiteList[_users[i]].state = true;
       }
     }
   }
 
-  function deleteUserFromWhitelist(address _user) public onlyOwner {
-    whiteList[_user] = false;
+  function deleteUserFromWhitelist(address[] _users) public onlyOwner {
+    for (uint i = 0; i < _users.length; i++) {
+      whiteList[_users[i]].state = false;
+    }
   }
 
   function switchWhiteFlag() public onlyOwner {

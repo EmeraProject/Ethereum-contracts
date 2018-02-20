@@ -75,10 +75,10 @@ contract('GEMERA', function (accounts) {
 
     // Delete user
     let status = await this.crowdsale.whiteList(accounts[1]);
-    status.should.be.true;
-    await this.crowdsale.deleteUserFromWhitelist(accounts[1]);
+    status[0].should.be.true;
+    await this.crowdsale.deleteUserFromWhitelist([accounts[1]]);
     status = await this.crowdsale.whiteList(accounts[1]);
-    status.should.be.false;
+    status[0].should.be.false;
   });
 
   it('buy tokens', async function() {

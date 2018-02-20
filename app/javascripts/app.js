@@ -141,12 +141,16 @@ async function onlyBalanceForCurrentCustomer () {
 async function updateWhiteList () {
   const count = (await crowdsaleInstance.lengthWhiteList()).toNumber()
   if (count > 0) {
+    let user = ''
+    let status = false
     const tbody = $('#white-list-table > tbody').empty()
     for (let i = 0; i < count; i++) {
-      const user = await crowdsaleInstance.whiteUsers(i)
+      user = await crowdsaleInstance.whiteUsers(i)
+      status = await crowdsaleInstance.whiteList(user)
       tbody.append(
         $('<tr />').append(
-          $(`<td>${user}</td>`)
+          $(`<td>${user}</td>`),
+          $(`<td>${status[0]}</td>`)
         )
       )
     }
@@ -402,6 +406,17 @@ window.whitelistAddress = async function () {
   if (users) {
     const arr = users.replace(/\s/g, '').split(',')
     await crowdsaleInstance.whitelistAddress(arr, { from: web3.eth.accounts[0], gas: 6000000 })
+    updateWhiteList()
+  } else {
+    $('#msg-white').html('Empty values are not allowed!')
+  }
+}
+
+window.deleteUserFromWhitelist = async function () {
+  const users = $('#white-addresses').val()
+  if (users) {
+    const arr = users.replace(/\s/g, '').split(',')
+    await crowdsaleInstance.deleteUserFromWhitelist(arr, { from: web3.eth.accounts[0], gas: 6000000 })
     updateWhiteList()
   } else {
     $('#msg-white').html('Empty values are not allowed!')
