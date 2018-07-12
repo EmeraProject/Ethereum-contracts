@@ -71,7 +71,7 @@ contract GEMERA is Pausable {
     require(remainTokens == 0 || start.add(period.mul(1 minutes)) < now || start > now);
     require(_start >= now && _period > 0);
     require(_rate > 0);
-    require(_bonusPercentage <= 100 && _bonusPercentage > 0);
+    require(_bonusPercentage <= 100 && _bonusPercentage >= 0);
     require(_hardCap > 0);
 
     start = _start;
@@ -86,7 +86,7 @@ contract GEMERA is Pausable {
 
   // Change for Prod
   function tryToChangeRate(uint _rate) public onlyOwner returns(bool) {
-    require(now > lastTimeRateChange.add(2 minutes));
+    require(now > lastTimeRateChange.add(1 minutes));
     require(_rate > 0);
 
     rate = _rate;
@@ -101,7 +101,7 @@ contract GEMERA is Pausable {
   function buyTokens(address _beneficiary) public salesActive whenNotPaused payable {
     require(_beneficiary != address(0));
     require(!fWhite || whiteList[msg.sender].state);
-    require((remainTokens > 0) && msg.value >= 10 finney);
+    require((remainTokens > 0) && msg.value >= 1 finney);
 
     uint refund;
     uint purchase;
