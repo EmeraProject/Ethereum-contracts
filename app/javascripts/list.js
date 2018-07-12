@@ -10,50 +10,46 @@ import { default as contract } from 'truffle-contract'
  * to setup a contract abstraction. We will use this abstraction
  * later to create an instance of the contract.
  */
-// contract name VacuumTokenSale
-import EMERATokenSale_artifacts from '../../build/contracts/EMERATokenSale.json'
 
-var EMERATokenSale = contract(EMERATokenSale_artifacts)
-let preIco = {}
-let ico = {}
+import crowdsaleArtifacts from '../../build/contracts/GEMERA.json'
 
-window.refreshList = function () {
+const crowdsale = contract(crowdsaleArtifacts)
+let { web3 } = window
+
+window.addEventListener('load', function () {
+  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+  if (typeof web3 !== 'undefined') {
+    console.warn('Using web3 detected from external source.')
+    // Use Mist/MetaMask's provider
+    web3 = new Web3(web3.currentProvider)
+  } else {
+    console.warn('No web3 detected. Please, install Metamask plugin!')
+    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+    // window.web3 = new Web3(new Web3.providers.HttpProvider("http://34.231.64.186:8545"));
+    web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:9545'))
+  }
+
+  crowdsale.setProvider(web3.currentProvider)
+  refreshList()
+})
+
+const refreshList = function () {
   getStatistics()
 }
 
 async function getStatistics () {
-    preIco = {}
-    EMERATokenSale.deployed().then(async function (contractInstance) {
-        contractInstance.currentStatCount.call( { from: web3.eth.accounts[0] }).then(async function (count) {
-            for (let i = 0; i < count; i++) {
-                await contractInstance.getStat.call(i + 1, { from: web3.eth.accounts[0] }).then(function (stat) {
-                    let tok_sold = (stat[1]/100000000).toString()
-                    let tok_free = (stat[2]/100000000).toString()
-                    let eth_purchase = (stat[3]/1000000000000000000).toString()
-                    $('#preico-rows').append('<tr><td>' + stat[0] + "</td><td>" + tok_sold + "</td><td>" + tok_free +
-                      "</td><td>" + eth_purchase + "</td></tr>")
+  const instance = await crowdsale.deployed()
+  const count = await instance.currentStatCount()
+  const decimals = 1E8
+  const ether = 1E18
 
-                })
-            }
-        })
-    })  
-}
-
-
-
-window.addEventListener('load', function() {
-  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-  if (typeof web3 !== 'undefined') {
-    console.warn("Using web3 detected from external source.")
-    // Use Mist/MetaMask's provider
-    window.web3 = new Web3(web3.currentProvider)
-  } else {
-    console.warn("No web3 detected. Please, install Metamask plugin!")
-    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    //window.web3 = new Web3(new Web3.providers.HttpProvider("http://34.231.64.186:8545"));
+  for (let i = 0; i < count; i++) {
+    await instance.statistics(i + 1).then((stat) => {
+      let tokSold = (stat[1] / decimals).toString()
+      let tokFree = (stat[2] / decimals).toString()
+      let ethPurchase = (stat[3] / ether).toString()
+      $('#preico-rows')
+        .append(`<tr><td>${stat[0]}</td><td>${tokSold}</td><td>${tokFree}</td><td>${ethPurchase}</td></tr>`)
+    })
   }
-
-  EMERATokenSale.setProvider(web3.currentProvider)
-
-  refreshList()
-})
+}

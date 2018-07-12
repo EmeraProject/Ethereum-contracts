@@ -8,231 +8,242 @@
     .margin-top-3 {
       margin-top: 3em;
     }
+    .table-fixed {
+      height: 45em;
+      overflow: auto;
+    }
   </style>
 </head>
 <body class="container">
   <div>
-  <h1>Ethereum EMERA Token Sale</h1>
-  <br>
-  <br>
-  <div class="col-sm-6 margin-top-3">
-    <h2>Round Sale Description</h2>
-    <div class="table-responsive">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Info</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>ICO contract address</td>
-            <td id="ico-address"></td>
-          </tr>
-          <tr>
-            <td>Owner</td>
-            <td id="owner"></td>
-          </tr>
-          <tr>
-            <td>Start time</td>
-            <td id="start"></td>
-          </tr>
-          <tr>
-            <td>Period (days)</td>
-            <td id="period"></td>
-          </tr>
-          <tr>
-            <td>EMERA Token Rate (in weis)</td>
-            <td id="currentRate"></td>
-          </tr>
-          <tr>
-            <td>Round Discount (in %)</td>
-            <td id="discount"></td>
-          </tr>
-          <tr>
-            <td>Hardcap for Round (tokens)</td>
-            <td id="hardcap"></td>
-          </tr>
-          <tr>
-            <td>Remained tokens</td>
-            <td id="remain"></td>
-          </tr>
-          <tr>
-            <td>Until the start</td>
-            <td id="until-start"></td>
-          </tr>
-          <tr>
-            <td>Until the end</td>
-            <td id="until-end"></td>
-          </tr>
-          <tr>
-            <td>Last time rate changed</td>
-            <td id="lastTimeRate"></td>
-          </tr>
-          <tr>
-            <td>Until possibility to change rate</td>
-            <td id="until-rateChange"></td>
-          </tr>
-          <tr>
-            <td>Paused?</td>
-            <td id="paused"></td>
-          </tr>
-
-        </tbody>
-      </table>
+    <h1>Ethereum EMERA Token Sale</h1>
+    <br>
+    <br>
+    <div class="col-sm-6 margin-top-3">
+      <h2>Round Sale Description</h2>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Info</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ICO contract address</td>
+              <td id="ico-address"></td>
+            </tr>
+            <tr>
+              <td>Owner</td>
+              <td id="owner"></td>
+            </tr>
+            <tr>
+              <td>Start time</td>
+              <td id="start"></td>
+            </tr>
+            <tr>
+              <td>Period (days)</td>
+              <td id="period"></td>
+            </tr>
+            <tr>
+              <td>EMERA Token Rate (in weis)</td>
+              <td id="currentRate"></td>
+            </tr>
+            <tr>
+              <td>Round Discount (in %)</td>
+              <td id="discount"></td>
+            </tr>
+            <tr>
+              <td>Hardcap for Round (tokens)</td>
+              <td id="hardcap"></td>
+            </tr>
+            <tr>
+              <td>Remained tokens</td>
+              <td id="remain"></td>
+            </tr>
+            <tr>
+              <td>Until the start</td>
+              <td id="until-start"></td>
+            </tr>
+            <tr>
+              <td>Until the end</td>
+              <td id="until-end"></td>
+            </tr>
+            <tr>
+              <td>Last time rate changed</td>
+              <td id="lastTimeRate"></td>
+            </tr>
+            <tr>
+              <td>Until possibility to change rate</td>
+              <td id="until-rateChange"></td>
+            </tr>
+            <tr>
+              <td>Paused?</td>
+              <td id="paused"></td>
+            </tr>
+            <tr>
+              <td>Whitelist enabled?</td>
+              <td id="fwhite"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h2>EMERA Token Description</h2>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Info</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Token address</td>
+              <td id="tokenAddress"></td>
+            </tr>
+            <tr>
+              <td>Tokens Total Issued</td>
+              <td id="totalSupply"></td>
+            </tr>
+            <tr>
+              <td>Tokens Total Burned</td>
+              <td id="totalBurned"></td>
+            </tr>
+            <tr>
+              <td>Tokens Total on current address</td>
+              <td id="totalCurrentAddress"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h2>Addresses from white list</h2>
+      <div class="table-responsive table-fixed">
+        <table id="white-list-table" class="table table-bordered">
+          <tbody />
+        </table>
+      </div>
     </div>
-
-
-
-    <h2>EMERA Token Description</h2>
-    <div class="table-responsive">
-      <table class="table table-bordered">
-        <thead>
-        <tr>
-          <th>Info</th>
-          <th>Value</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>Token address</td>
-          <td id="tokenAddress"></td>
-        </tr>
-        <tr>
-          <td>Tokens Total Issued</td>
-          <td id="totalSupply"></td>
-        </tr>
-        <tr>
-          <td>Tokens Total Burned</td>
-          <td id="totalBurned"></td>
-        </tr>
-        <tr>
-          <td>Tokens Total on current address</td>
-          <td id="totalCurrentAddress"></td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-
-
-  </div>
-
-  <div class="col-sm-offset-1 col-sm-5 margin-top-3">
+    <div class="col-sm-offset-1 col-sm-5 margin-top-3">
       <h2 style='border-bottom:1px solid #ccc;'>Owner Functions</h2>
+      <br>
+      <h4 class="col-sm-10 "style='border-bottom:4px solid #ccc;'>Settings ICO</h4>
+      <br>
+      <br>
+      <br>
+      <br>
+      <div id="msg-ico"></div>
+      <br>
+      <br>
+      <a onclick="pause()" class="btn btn-primary">Pause</a>
+      <a onclick="unpause()" class="col-sm-offset-1 btn btn-primary">Unpause</a>
+      <br>
+      <br>
+      <div class="border">
+        <input type="text" id="start-value", class="col-sm-13" placeholder="Enter the start time for new Round in UNIX timestamp format"/>
         <br>
-        <h4 class="col-sm-10 "style='border-bottom:4px solid #ccc;'>Settings ICO</h4>
+        <input type="text" id="period-value", class="col-sm-13" placeholder="Enter the period for Round Sale (days)"/>
         <br>
+        <input type="text" id="price-value", class="col-sm-13" placeholder="Enter the initial price for token in Round Sale (weis)"/>
         <br>
+        <input type="text" id="discount-value", class="col-sm-13" placeholder="Enter the discount value for Round Sale (%)"/>
         <br>
+        <input type="text" id="hardcapRound-value", class="col-sm-13" placeholder="Enter the hardcap for Round Sale (tokens)"/>
         <br>
-        <div id="msg-ico"></div>
-        <br>
-        <br>
-        <a onclick="pause()" class="btn btn-primary">Pause</a>
-        <a onclick="unpause()" class="col-sm-offset-1 btn btn-primary">Unpause</a>
-        <br>
-
-        <br>
-        <div class="border">
-            <input type="text" id="start-value", class="col-sm-13" placeholder="Enter the start time for new Round in UNIX timestamp format"/>
-            <br>
-            <input type="text" id="period-value", class="col-sm-13" placeholder="Enter the period for Round Sale (days)"/>
-            <br>
-            <input type="text" id="price-value", class="col-sm-13" placeholder="Enter the initial price for token in Round Sale (weis)"/>
-            <br>
-            <input type="text" id="discount-value", class="col-sm-13" placeholder="Enter the discount value for Round Sale (%)"/>
-            <br>
-            <input type="text" id="hardcapRound-value", class="col-sm-13" placeholder="Enter the hardcap for Round Sale (tokens)"/>
-            <br>
-            <a onclick="setupRound()" class="btn btn-primary">Setup New Round</a>
-	    <a onclick="cancelRound()" class="col-sm-offset-1 btn btn-primary">Cancel not started Round</a>
-            <br>
-            <br>
-          <br>
-          <input type="text" id="new-rate-setup", class="col-sm-13" placeholder="Enter the new price for token (in weis)"/>
-          <br>
-          <a onclick="setupNewPrice()" class="btn btn-primary">Setup New Price</a>
-        </div>
-                      
+        <a onclick="setupRound()" class="btn btn-primary">Setup New Round</a>
+        <a onclick="cancelRound()" class="col-sm-offset-1 btn btn-primary">Cancel not started Round</a>
         <br>
         <br>
-        
-        <h4 style='border-bottom:4px solid #ccc;'>Work with Token</h4>
         <br>
+        <input type="text" id="new-rate-setup", class="col-sm-13" placeholder="Enter the new price for token (in weis)"/>
         <br>
-        <div id="msg-token"></div>
-        <br>
-        <br>
-        <a onclick="burnTokens()" class="btn btn-danger">Burn All My Tokens</a>
-	<a onclick="mintYearly()" class="col-sm-offset-1 btn btn-primary">Mint yearly based tokens (0.5%)</a>
-	<br>
-	<br>
-	<a onclick="eraseRemainedTokens()" class="btn btn-danger btn-primary">Erase ALL Remain Tokens. Be careful!</a>
-        <br>
-        <br>
-        <h4 style='border-bottom:4px solid #ccc;'>Transfer Contract</h4>
-        <br>
-        <br>
-        <div id="msg-transfer"></div>
-        <br>
-        <br>
-        <input type="text" id="owner-value", class="col-sm-13" placeholder="Enter the new owner address"/>
-        <br>
-        <a onclick="transferOwner()" class="btn btn-warning">Transfer Ownership for EMERA Token Sale contract</a>
-        <br>
-        <br>
+        <a onclick="setupNewPrice()" class="btn btn-primary">Setup New Price</a>
+      </div>
+      <br>
+      <br>
+      <h4 style='border-bottom:4px solid #ccc;'>Work with Token</h4>
+      <br>
+      <br>
+      <div id="msg-token"></div>
+      <br>
+      <br>
+      <a onclick="burnTokens()" class="btn btn-danger">Burn All My Tokens</a>
+    	<a onclick="mintYearly()" class="col-sm-offset-1 btn btn-primary">Mint yearly based tokens (0.5%)</a>
+    	<br>
+    	<br>
+    	<a onclick="eraseRemainedTokens()" class="btn btn-danger btn-primary">Erase ALL Remain Tokens. Be careful!</a>
+      <br>
+      <br>
+      <h4 style='border-bottom:4px solid #ccc;'>Transfer Contract</h4>
+      <br>
+      <br>
+      <div id="msg-transfer"></div>
+      <br>
+      <br>
+      <input type="text" id="owner-value", class="col-sm-13" placeholder="Enter the new owner address"/>
+      <br>
+      <a onclick="transferOwner()" class="btn btn-warning">Transfer Ownership for EMERA Token Sale contract</a>
+      <br>
+      <br>
+      <div id="white" style="margin-bottom: 2em;">
+        <h4 style='border-bottom:4px solid #ccc; margin-bottom: 3em;'>White list</h4>
+        <div id="msg-white" style="margin-bottom: 2em;"></div>
+        <input
+          id="white-addresses"
+          type="text"
+          class="col-sm-13"
+          placeholder="Enter the addresses for white list separated by commas"
+          style="margin-bottom: 1em;"
+        />
+        <a id="btn-white" onclick="switchWhiteFlag()" class="btn btn-success" style="width: 150px;">*</a>
+        <a onclick="whitelistAddress()" class="btn btn-warning">Add users</a>
+        <a onclick="deleteUserFromWhitelist()" class="btn btn-warning">Delete users</a>
+      </div>
       <h2 style='border-bottom:1px solid #ccc;' >User Functions</h2>
-        <br>
-        <br>
-        <div id="msg-buy"></div>
-        <br>
-        <br>
-        <input type="text" id="wei-buy-value", class="col-sm-13" placeholder="Enter the amount of wei to purchase tokens"/>
-        <br>
-        <a onclick="buyTokens()" class="btn btn-primary">Buy Tokens</a>
-        <br>
-        <br>
-        <br>
-        <input type="text" id="transfer-address", class="col-sm-13" placeholder="Enter the address to transfer tokens"/>
-        <br>
-        <input type="text" id="transfer-value", class="col-sm-13" placeholder="Enter the amount of tokens to transfer"/>
-        <br>
-        <a onclick="transferTokens()" class="btn btn-primary">Transfer Tokens</a>
-        <br>
-        <br>
-        <br>
-        <a href="./list.html" target="_blank" class="btn btn-success">See List</a>
-        <br>
-        <br>
-  </div>
-
-
-</div>
- 
-<div class="">
-  <div>
-
-    <div class="margin-top-3 col-md-12">
-        <h2>Transaction Tracker</h2>
-        
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Hash</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody id="log-rows">
-        </tbody>
-      </table>
+      <br>
+      <br>
+      <div id="msg-buy"></div>
+      <br>
+      <br>
+      <input type="text" id="wei-buy-value", class="col-sm-13" placeholder="Enter the amount of wei to purchase tokens"/>
+      <br>
+      <a onclick="buyTokens()" class="btn btn-primary">Buy Tokens</a>
+      <br>
+      <br>
+      <br>
+      <input type="text" id="transfer-address", class="col-sm-13" placeholder="Enter the address to transfer tokens"/>
+      <br>
+      <input type="text" id="transfer-value", class="col-sm-13" placeholder="Enter the amount of tokens to transfer"/>
+      <br>
+      <a onclick="transferTokens()" class="btn btn-primary">Transfer Tokens</a>
+      <br>
+      <br>
+      <br>
+      <a href="./list.html" target="_blank" class="btn btn-success">See List</a>
+      <br>
+      <br>
     </div>
   </div>
-</div>
-
+  <div>
+    <div>
+      <div class="margin-top-3 col-md-12">
+          <h2>Transaction Tracker</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Hash</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="log-rows">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
 <script src="./app.js"></script>
